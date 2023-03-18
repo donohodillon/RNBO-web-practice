@@ -2,6 +2,7 @@ html, body {
     margin: 0;
     padding: 0;
 }
+
 #rnbo-root {
     height: 100vh;
     width: 100vw;
@@ -52,3 +53,4 @@ h2, em {
 #rnbo-parameter-sliders > div > input:first-of-type {
     flex-grow: 1;
 }
+
