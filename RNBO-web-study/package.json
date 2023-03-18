@@ -1,0 +1,19 @@
+
+  
+
+
+
+{
+
+  "dependencies": {
+    "p5": "^1.6.0"
+  },
+  "compilerOptions": {
+    "target": "es6"
+  },
+  "include": [
+    "*.js",
+    "**/*.js",
+    "/Users/dillondonoho/.vscode/extensions/samplavigne.p5-vscode-1.2.13/p5types/global.d.ts"
+  ]
+}
