@@ -137,6 +137,26 @@ async function setup() {
     const outputNode = context.createGain();
     outputNode.connect(context.destination);
     outputNode.gain.value = 0.5;
+
+    // Creates stop playback button with spacebar
+
+    let isVolumeOn = true;
+
+    window.addEventListener('keydown', event => {
+        if (event.code === 'Space') {
+          // toggle volume on/off
+          isVolumeOn = !isVolumeOn;
+          console.log("keydown event");
+          
+          // set gain value with linear ramp
+          const currentGain = outputNode.gain.value;
+          const targetGain = isVolumeOn ? 1 : 0;
+          const rampDuration = 0.1; // adjust as needed
+          outputNode.gain.cancelScheduledValues(context.currentTime);
+          outputNode.gain.setValueAtTime(currentGain, context.currentTime);
+          outputNode.gain.linearRampToValueAtTime(targetGain, context.currentTime + rampDuration);
+        }
+      });
     
     // Fetch the exported patcher
     let response, patcher;
