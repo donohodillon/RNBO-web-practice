@@ -1,127 +1,128 @@
 //P5JS Section
-(function() {
+// (function() {
 
-let _minW;
-let _obj;
-let _numRecursive;
+// let _minW;
+// let _obj;
+// let _numRecursive;
 
-function setup() {
-    createCanvas(windowWidth, windowHeight);
-  colorMode(HSB, 360, 100, 100, 255);
-  setObject();
-  }
+// function setup() {
+//     createCanvas(windowWidth, windowHeight);
+//   colorMode(HSB, 360, 100, 100, 255);
+//   setObject();
+//   }
 
-function setObject() {
-  _minW = min(width, height) * 1;
-  stroke(100);
-  strokeWeight(_minW/800);
-  fill(0);
+// function setObject() {
+//   _minW = min(width, height) * 1;
+//   stroke(100);
+//   strokeWeight(_minW/800);
+//   fill(0);
 
-  _numRecursive = 4;
+//   _numRecursive = 4;
 
-  let centXy = createVector(0, _minW * 0.4);
-  let w = _minW * 0.5;//0.5;
-  let h = _minW * 0.15;//0.17;
-  let level = 0;
-  let noiseInit = random(10000);
-  _obj = new Obj(centXy, w, h, level, noiseInit);
-}
+//   let centXy = createVector(0, _minW * 0.4);
+//   let w = _minW * 0.5;//0.5;
+//   let h = _minW * 0.15;//0.17;
+//   let level = 0;
+//   let noiseInit = random(10000);
+//   _obj = new Obj(centXy, w, h, level, noiseInit);
+// }
 
-class Obj {
-  constructor(centXy, w, h, level, noiseInit) {
-    this.centXy = centXy;
-    this.w = w;
-    this.h = h;
-    this.level = level;
-    this.maxAng = asin(2 * this.h / this.w) * 0.8;//0.5;
-    this.minAng = -this.maxAng;
-    this.ampAng = this.maxAng - this.minAng;
+// class Obj {
+//   constructor(centXy, w, h, level, noiseInit) {
+//     this.centXy = centXy;
+//     this.w = w;
+//     this.h = h;
+//     this.level = level;
+//     this.maxAng = asin(2 * this.h / this.w) * 0.8;//0.5;
+//     this.minAng = -this.maxAng;
+//     this.ampAng = this.maxAng - this.minAng;
 
-    this.noiseInit = noiseInit + 0.05;//0.03;
-    this.noiseFreq = 3;
-    this.noiseSpeed = 0.003;
+//     this.noiseInit = noiseInit + 0.05;//0.03;
+//     this.noiseFreq = 3;
+//     this.noiseSpeed = 0.003;
 
-    this.count = 0;
-    this.maxLevel = 20;
-   if (this.level < this.maxLevel) {
-    let newCentXy = createVector(0, -this.h);
-    let newW = this.w * 0.83;
-    let newH = this.h * 0.83;
-    this.child = new Obj(newCentXy, newW, newH, this.level + 1, this.noiseInit);
-   }
-  }
+//     this.count = 0;
+//     this.maxLevel = 20;
+//    if (this.level < this.maxLevel) {
+//     let newCentXy = createVector(0, -this.h);
+//     let newW = this.w * 0.83;
+//     let newH = this.h * 0.83;
+//     this.child = new Obj(newCentXy, newW, newH, this.level + 1, this.noiseInit);
+//    }
+//   }
 
-  draw(initAng) {
-    let noiseVal = noise(this.noiseInit + this.count * this.noiseSpeed);
-    let val = sin(this.noiseFreq * 2*PI * noiseVal) * 0.5 + 0.5;
-    this.ang = val * this.ampAng + this.minAng;
+//   draw(initAng) {
+//     let noiseVal = noise(this.noiseInit + this.count * this.noiseSpeed);
+//     let val = sin(this.noiseFreq * 2*PI * noiseVal) * 0.5 + 0.5;
+//     this.ang = val * this.ampAng + this.minAng;
 
-    let btmW = this.w * cos(this.ang);
-    let vTopLeft = createVector(-this.w/2, 0).rotate(this.ang).add(0, -this.h);
-    let vTopRight = createVector(this.w/2, 0).rotate(this.ang).add(0, -this.h);
-    let vBtmRight = createVector(btmW/2, 0);
-    let vBtmLeft = createVector(-btmW/2, 0);
+//     let btmW = this.w * cos(this.ang);
+//     let vTopLeft = createVector(-this.w/2, 0).rotate(this.ang).add(0, -this.h);
+//     let vTopRight = createVector(this.w/2, 0).rotate(this.ang).add(0, -this.h);
+//     let vBtmRight = createVector(btmW/2, 0);
+//     let vBtmLeft = createVector(-btmW/2, 0);
 
-    let aryXy = [vTopLeft, vTopRight, vBtmRight, vBtmLeft];
-    for (let i = 0; i < _numRecursive; i++) {
-      aryXy = chaikin(aryXy, true);
-    }
+//     let aryXy = [vTopLeft, vTopRight, vBtmRight, vBtmLeft];
+//     for (let i = 0; i < _numRecursive; i++) {
+//       aryXy = chaikin(aryXy, true);
+//     }
 
-    push();
-    translate(this.centXy.x, this.centXy.y);
-    rotate(initAng);
-    beginShape();
-    for (let i = 0; i < aryXy.length; i++) {
-      vertex(aryXy[i].x, aryXy[i].y);
-    }
-    endShape(CLOSE);
+//     push();
+//     translate(this.centXy.x, this.centXy.y);
+//     rotate(initAng);
+//     beginShape();
+//     for (let i = 0; i < aryXy.length; i++) {
+//       vertex(aryXy[i].x, aryXy[i].y);
+//     }
+//     endShape(CLOSE);
 
-    if (this.level < this.maxLevel) { this.child.draw(this.ang); }
-    pop();
-    this.count++;
-  }
-}
+//     if (this.level < this.maxLevel) { this.child.draw(this.ang); }
+//     pop();
+//     this.count++;
+//   }
+// }
 
-function chaikin(aryXy, type) { //length >= 3, type=true -> CLOSE
-  let ratio = 0.75;
-  let newAryXy = [];
-  if (type == true) {
-    for (let i = 0; i < aryXy.length; i++) {
-      let previ;
-      if (i == 0) { previ = aryXy.length-1; }
-      else { previ = i - 1; }
-      let xy1 = p5.Vector.lerp(aryXy[previ], aryXy[i], ratio);
-      let nexti;
-      if (i == aryXy.length-1) { nexti = 0; }
-      else { nexti = i + 1; }
-      let xy2 = p5.Vector.lerp(aryXy[nexti], aryXy[i], ratio);
-      newAryXy.push(xy1);
-      newAryXy.push(xy2);
-    }
-  } else {
-    newAryXy.push(aryXy[0]);
-    for (let i = 1; i < aryXy.length-1; i++) {
-      let previ = i - 1;
-      let xy1 = p5.Vector.lerp(aryXy[previ], aryXy[i], ratio);
-      let nexti = i + 1;
-      let xy2 = p5.Vector.lerp(aryXy[nexti], aryXy[i], ratio);
-      newAryXy.push(xy1);
-      newAryXy.push(xy2);
-    }
-    newAryXy.push(aryXy[aryXy.length-1]);
-  }
+// function chaikin(aryXy, type) { //length >= 3, type=true -> CLOSE
+//   let ratio = 0.75;
+//   let newAryXy = [];
+//   if (type == true) {
+//     for (let i = 0; i < aryXy.length; i++) {
+//       let previ;
+//       if (i == 0) { previ = aryXy.length-1; }
+//       else { previ = i - 1; }
+//       let xy1 = p5.Vector.lerp(aryXy[previ], aryXy[i], ratio);
+//       let nexti;
+//       if (i == aryXy.length-1) { nexti = 0; }
+//       else { nexti = i + 1; }
+//       let xy2 = p5.Vector.lerp(aryXy[nexti], aryXy[i], ratio);
+//       newAryXy.push(xy1);
+//       newAryXy.push(xy2);
+//     }
+//   } else {
+//     newAryXy.push(aryXy[0]);
+//     for (let i = 1; i < aryXy.length-1; i++) {
+//       let previ = i - 1;
+//       let xy1 = p5.Vector.lerp(aryXy[previ], aryXy[i], ratio);
+//       let nexti = i + 1;
+//       let xy2 = p5.Vector.lerp(aryXy[nexti], aryXy[i], ratio);
+//       newAryXy.push(xy1);
+//       newAryXy.push(xy2);
+//     }
+//     newAryXy.push(aryXy[aryXy.length-1]);
+//   }
   
-  return newAryXy;
-}
+//   return newAryXy;
+// }
   
-  function draw() {
-    background(100);
-    translate(width/2, height/2);
+//   function draw() {
+//     background(100);
+//     translate(width/2, height/2);
   
-    _obj.draw(0);
-  }
+//     _obj.draw(0);
+//   }
 
-})();
+// })();
+
 //RNBO SECTION
 (function() {
 
@@ -303,6 +304,7 @@ function makeSliders(device) {
             isDraggingSlider = false;
             slider.value = param.value;
             text.value = param.value.toFixed(1);
+            console.log(param.name, ":", slider.value);
         });
         slider.addEventListener("input", () => {
             let value = Number.parseFloat(slider.value);
