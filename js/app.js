@@ -1,14 +1,15 @@
 //P5JS Section
+(function() {
+
+let _minW;
+let _obj;
+let _numRecursive;
 
 function setup() {
     createCanvas(windowWidth, windowHeight);
   colorMode(HSB, 360, 100, 100, 255);
   setObject();
   }
-
-  let _minW;
-let _obj;
-let _numRecursive;
 
 function setObject() {
   _minW = min(width, height) * 1;
@@ -120,9 +121,11 @@ function chaikin(aryXy, type) { //length >= 3, type=true -> CLOSE
     _obj.draw(0);
   }
 
+})();
 //RNBO SECTION
+(function() {
 
-async function setup1() {
+async function setup() {
     const patchExportURL = "export/patch.export2.json";
 
     // Create AudioContext
@@ -326,6 +329,7 @@ function makeSliders(device) {
 
         // Add the slider element
         pdiv.appendChild(sliderContainer);
+      
     });
 
     // Listen to parameter changes from the device
@@ -464,5 +468,6 @@ function makeMIDIKeyboard(device) {
     });
 }
 
-setup1();
+setup();
 
+})();
