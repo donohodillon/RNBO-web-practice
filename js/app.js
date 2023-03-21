@@ -1,133 +1,41 @@
 //P5JS Section
-// (function() {
+let device;
 
-// let _minW;
-// let _obj;
-// let _numRecursive;
-
-// function setup() {
-//     createCanvas(windowWidth, windowHeight);
-//   colorMode(HSB, 360, 100, 100, 255);
-//   setObject();
-//   }
-
-// function setObject() {
-//   _minW = min(width, height) * 1;
-//   stroke(100);
-//   strokeWeight(_minW/800);
-//   fill(0);
-
-//   _numRecursive = 4;
-
-//   let centXy = createVector(0, _minW * 0.4);
-//   let w = _minW * 0.5;//0.5;
-//   let h = _minW * 0.15;//0.17;
-//   let level = 0;
-//   let noiseInit = random(10000);
-//   _obj = new Obj(centXy, w, h, level, noiseInit);
-// }
-
-// class Obj {
-//   constructor(centXy, w, h, level, noiseInit) {
-//     this.centXy = centXy;
-//     this.w = w;
-//     this.h = h;
-//     this.level = level;
-//     this.maxAng = asin(2 * this.h / this.w) * 0.8;//0.5;
-//     this.minAng = -this.maxAng;
-//     this.ampAng = this.maxAng - this.minAng;
-
-//     this.noiseInit = noiseInit + 0.05;//0.03;
-//     this.noiseFreq = 3;
-//     this.noiseSpeed = 0.003;
-
-//     this.count = 0;
-//     this.maxLevel = 20;
-//    if (this.level < this.maxLevel) {
-//     let newCentXy = createVector(0, -this.h);
-//     let newW = this.w * 0.83;
-//     let newH = this.h * 0.83;
-//     this.child = new Obj(newCentXy, newW, newH, this.level + 1, this.noiseInit);
-//    }
-//   }
-
-//   draw(initAng) {
-//     let noiseVal = noise(this.noiseInit + this.count * this.noiseSpeed);
-//     let val = sin(this.noiseFreq * 2*PI * noiseVal) * 0.5 + 0.5;
-//     this.ang = val * this.ampAng + this.minAng;
-
-//     let btmW = this.w * cos(this.ang);
-//     let vTopLeft = createVector(-this.w/2, 0).rotate(this.ang).add(0, -this.h);
-//     let vTopRight = createVector(this.w/2, 0).rotate(this.ang).add(0, -this.h);
-//     let vBtmRight = createVector(btmW/2, 0);
-//     let vBtmLeft = createVector(-btmW/2, 0);
-
-//     let aryXy = [vTopLeft, vTopRight, vBtmRight, vBtmLeft];
-//     for (let i = 0; i < _numRecursive; i++) {
-//       aryXy = chaikin(aryXy, true);
-//     }
-
-//     push();
-//     translate(this.centXy.x, this.centXy.y);
-//     rotate(initAng);
-//     beginShape();
-//     for (let i = 0; i < aryXy.length; i++) {
-//       vertex(aryXy[i].x, aryXy[i].y);
-//     }
-//     endShape(CLOSE);
-
-//     if (this.level < this.maxLevel) { this.child.draw(this.ang); }
-//     pop();
-//     this.count++;
-//   }
-// }
-
-// function chaikin(aryXy, type) { //length >= 3, type=true -> CLOSE
-//   let ratio = 0.75;
-//   let newAryXy = [];
-//   if (type == true) {
-//     for (let i = 0; i < aryXy.length; i++) {
-//       let previ;
-//       if (i == 0) { previ = aryXy.length-1; }
-//       else { previ = i - 1; }
-//       let xy1 = p5.Vector.lerp(aryXy[previ], aryXy[i], ratio);
-//       let nexti;
-//       if (i == aryXy.length-1) { nexti = 0; }
-//       else { nexti = i + 1; }
-//       let xy2 = p5.Vector.lerp(aryXy[nexti], aryXy[i], ratio);
-//       newAryXy.push(xy1);
-//       newAryXy.push(xy2);
-//     }
-//   } else {
-//     newAryXy.push(aryXy[0]);
-//     for (let i = 1; i < aryXy.length-1; i++) {
-//       let previ = i - 1;
-//       let xy1 = p5.Vector.lerp(aryXy[previ], aryXy[i], ratio);
-//       let nexti = i + 1;
-//       let xy2 = p5.Vector.lerp(aryXy[nexti], aryXy[i], ratio);
-//       newAryXy.push(xy1);
-//       newAryXy.push(xy2);
-//     }
-//     newAryXy.push(aryXy[aryXy.length-1]);
-//   }
+let sketch = function(p) {
+    console.log("p5js library loaded")
+    let slider;
   
-//   return newAryXy;
-// }
+    p.setup = function() {
+        RNBOsetup();
+        console.log("p5js setup working")
+        slider = p.createSlider(0, 500, 300);
+        slider.position(10, 10);
+        slider.input(() => {
+            let parameterMap = device.parameters;
+            
+            parameterMap[0].value = slider.value();
+    
+            console.log(parameterMap[0].value, slider.value());
+          }); 
+        p.createCanvas(400, 400);
+    }
   
-//   function draw() {
-//     background(100);
-//     translate(width/2, height/2);
-  
-//     _obj.draw(0);
-//   }
+    p.draw = function() {  
+      p.background(220);
+      let sliderVal = slider.value();
+      p.ellipse(200, 200, sliderVal * .75, sliderVal * .75);
+    //   let paramterArray = device.parameters;
+    //   paramterArray[0].value = sliderVal;
+    //   console.log(paramterArray[0]);
+    }
+  }
 
-// })();
+let myp5 = new p5(sketch);
 
 //RNBO SECTION
-(function() {
-
-async function setup() {
-    const patchExportURL = "export/patch.export2.json";
+async function RNBOsetup() {
+    const patchExportURL = "export/patch.exportSAW.json";
+    console.log("RNBO setup working")
 
     // Create AudioContext
     const WAContext = window.AudioContext || window.webkitAudioContext;
@@ -135,7 +43,7 @@ async function setup() {
 
     // Create gain node and connect it to audio output
     const outputNode = context.createGain();
-    outputNode.connect(context.destination);
+    outputNode.connect(context.destination); 
     outputNode.gain.value = 0.5;
 
     // Creates stop playback button with spacebar
@@ -201,7 +109,6 @@ async function setup() {
     } catch (e) {}
 
     // Create the device
-    let device;
     try {
         device = await RNBO.createDevice({ context, patcher });
     } catch (err) {
@@ -212,6 +119,13 @@ async function setup() {
         }
         return;
     }
+
+    device.parameters.forEach(param => {
+        console.log("Param Id: ", param.id)
+        console.log("Param Name: ", param.name)
+        console.log("Param Min: ", param.min)
+        console.log("Param Max: ", param.max) 
+    })
 
     // (Optional) Load the samples
     if (dependencies.length)
@@ -246,9 +160,6 @@ async function setup() {
     if (typeof guardrails === "function")
         guardrails();
 
-    // P5js sketch goes here
-    
-
 }
 
 function loadRNBOScript(version) {
@@ -271,6 +182,7 @@ function makeSliders(device) {
     let pdiv = document.getElementById("rnbo-parameter-sliders");
     let noParamLabel = document.getElementById("no-param-label");
     if (noParamLabel && device.numParameters > 0) pdiv.removeChild(noParamLabel);
+    console.log("Make sliders function called")
 
     // This will allow us to ignore parameter update events while dragging the slider.
     let isDraggingSlider = false;
@@ -287,7 +199,7 @@ function makeSliders(device) {
         // Create a label, an input slider and a value display
         let label = document.createElement("label");
         let slider = document.createElement("input");
-        let text = document.createElement("input");
+        let text = document.createElement("input"); 
         let sliderContainer = document.createElement("div");
         sliderContainer.appendChild(label);
         sliderContainer.appendChild(slider);
@@ -306,6 +218,11 @@ function makeSliders(device) {
         slider.setAttribute("name", param.name);
         slider.setAttribute("min", param.min);
         slider.setAttribute("max", param.max);
+
+        //Console messages 
+        
+
+        //Set step attributes
         if (param.steps > 1) {
             slider.setAttribute("step", (param.max - param.min) / (param.steps - 1));
         } else {
@@ -490,7 +407,3 @@ function makeMIDIKeyboard(device) {
         mdiv.appendChild(key);
     });
 }
-
-setup();
-
-})();
