@@ -8,7 +8,7 @@ let sketch = function(p) {
     p.setup = function() {
         RNBOsetup();
         console.log("p5js setup working")
-        slider = p.createSlider(0, 500, 300);
+        slider = p.createSlider(20, 300, 20);
         slider.position(10, 10);
         slider.input(() => {
             let parameterMap = device.parameters;
