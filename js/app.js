@@ -1,4 +1,7 @@
 //P5JS Section
+
+//To do - make a for each loop inside of rnbo initialization function.
+
 let device;
 
 let sketch = function(p) {
@@ -24,9 +27,6 @@ let sketch = function(p) {
       p.background(220);
       let sliderVal = slider.value();
       p.ellipse(200, 200, sliderVal * .75, sliderVal * .75);
-    //   let paramterArray = device.parameters;
-    //   paramterArray[0].value = sliderVal;
-    //   console.log(paramterArray[0]);
     }
   }
 
@@ -40,11 +40,13 @@ async function RNBOsetup() {
     // Create AudioContext
     const WAContext = window.AudioContext || window.webkitAudioContext;
     const context = new WAContext();
+    if (context != null){
+        console.log("Audio Context Created");
+    }
 
     // Create gain node and connect it to audio output
     const outputNode = context.createGain();
     outputNode.connect(context.destination); 
-    outputNode.gain.value = 0.5;
 
     // Creates stop playback button with spacebar
 
@@ -127,6 +129,8 @@ async function RNBOsetup() {
         console.log("Param Max: ", param.max) 
     })
 
+    
+
     // (Optional) Load the samples
     if (dependencies.length)
         await device.loadDataBufferDependencies(dependencies);
@@ -135,22 +139,22 @@ async function RNBOsetup() {
     device.node.connect(outputNode);
 
     // (Optional) Extract the name and rnbo version of the patcher from the description
-    document.getElementById("patcher-title").innerText = (patcher.desc.meta.filename || "Unnamed Patcher") + " (v" + patcher.desc.meta.rnboversion + ")";
+    // document.getElementById("patcher-title").innerText = (patcher.desc.meta.filename || "Unnamed Patcher") + " (v" + patcher.desc.meta.rnboversion + ")";
 
     // (Optional) Automatically create sliders for the device parameters
-    makeSliders(device);
+    // makeSliders(device);
 
     // (Optional) Create a form to send messages to RNBO inputs
-    makeInportForm(device);
+    // makeInportForm(device);
 
-    // (Optional) Attach listeners to outports so you can log messages from the RNBO patcher
-    attachOutports(device);
+    // // (Optional) Attach listeners to outports so you can log messages from the RNBO patcher
+    // attachOutports(device);
 
-    // (Optional) Load presets, if any
-    loadPresets(device, patcher);
+    // // (Optional) Load presets, if any
+    // loadPresets(device, patcher);
 
-    // (Optional) Connect MIDI inputs
-    makeMIDIKeyboard(device);
+    // // (Optional) Connect MIDI inputs
+    // makeMIDIKeyboard(device);
 
     document.body.onclick = () => {
         context.resume();
