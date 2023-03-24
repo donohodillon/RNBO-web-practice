@@ -8,24 +8,29 @@ let sliders = [];
 
 let sketch = function(p) {
 
-    console.log("p5js library loaded")
+    console.log("p5js library loaded") 
     
     p.setup = function() {
-        RNBOsetup();
+        RNBOsetup();  
         console.log("p5js setup working")
         p.createCanvas(400, 400);
     }
   
-    p.draw = function() {  
+    p.draw = function() { 
       p.background(0);
-      let sliderVal = sliders[0].value();
-      p.ellipse(200, 200, sliderVal * .75, sliderVal * .75);
+      p.ellipse(200, 200, 50, 50);
+      console.log("Slider 0 value:", sliders[0].value());
+    console.log("Slider 1 value:", sliders[1].value());
 
-    }
+      let sliderVal = sliders[0].value();
+      let sliderVal1 = sliders[1].value();
+    //   console.log("slider valueeee", sliders[0].value) 
+      p.ellipse(200, 200, sliderVal * .75, sliderVal * .75);
+    } 
   }
 
 myp5 = new p5(sketch);
-
+ 
 //RNBO SECTION
 async function RNBOsetup() {
     const patchExportURL = "export/patch.exportSAW.json";
@@ -149,11 +154,12 @@ function makeP5jsSliders(myp5, device) {
     console.log("p5jsslidersfunction")
     device.parameters.forEach((param, index)=>{
         let slider = myp5.createSlider(param.min, param.max, param.min);
+        console.log("slider created")
         slider.position(10, 10 + offset);
         slider.input(() => {
             let parameterMap = device.parameters;
             parameterMap[index].value = slider.value();
-            console.log(parameterMap[index].value, slider.value());
+            // console.log(parameterMap[index].value, slider.value());
 
           }); 
         sliders.push(slider);
