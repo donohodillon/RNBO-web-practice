@@ -9,26 +9,28 @@ let sliders = [];
 let sketch = function(p) {
 
     console.log("p5js library loaded") 
-    
-    p.setup = function() {
-        RNBOsetup();  
+
+    p.setup = async function() {
+        await RNBOsetup();  
         console.log("p5js setup working")
         p.createCanvas(400, 400);
     } 
    
-    p.draw = function() {  
-      p.background(255);
-    //   p.ellipse(200, 200, 50, 50);
-      console.log("Slider 0 value:", sliders[0].value());
-      console.log("Slider 1 value:", sliders[1].value());
-
-      let sliderVal = sliders[0].value();
-      let sliderVal1 = sliders[1].value();
-    //   console.log("slider valueeee", sliders[0].value) 
-      p.ellipse(200, 200, sliderVal * .75, sliderVal * .75);
-      p.ellipse(200, 200, sliderVal1 * .75, sliderVal1 * .75);
-      
-    }  
+    p.draw = function() {
+        p.background(255);
+    
+        // Check if sliders array has at least two elements
+        if (sliders.length >= 2) {
+            console.log("Slider 0 value:", sliders[0].value());
+            console.log("Slider 1 value:", sliders[1].value());
+    
+            let sliderVal = sliders[0].value();
+            let sliderVal1 = sliders[1].value();
+            p.ellipse(200, 200, sliderVal * .75, sliderVal * .75);
+            p.ellipse(200, 200, sliderVal1 * .75, sliderVal1 * .75);
+        }
+    }
+     
   }
 
 myp5 = new p5(sketch);
