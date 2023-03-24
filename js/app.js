@@ -6,61 +6,61 @@ let device;
 let myp5;
 let sliders = [];
 
-// let sketch = function(p) {
-
-//     console.log("p5js library loaded") 
-    
-//     p.setup = function() {
-//         RNBOsetup();  
-//         console.log("p5js setup working")
-//         p.createCanvas(400, 400);
-//     } 
-   
-//     p.draw = function() {  
-//       p.background(255);
-//     //   p.ellipse(200, 200, 50, 50);
-//       console.log("Slider 0 value:", sliders[0].value());
-//       console.log("Slider 1 value:", sliders[1].value());
-
-//       let sliderVal = sliders[0].value();
-//       let sliderVal1 = sliders[1].value();
-//     //   console.log("slider valueeee", sliders[0].value) 
-//       p.ellipse(200, 200, sliderVal * .75, sliderVal * .75);
-//       p.ellipse(200, 200, sliderVal1 * .75, sliderVal1 * .75);
-      
-//     } 
-//   }
-
-// myp5 = new p5(sketch);
-
 let sketch = function(p) {
-    let angle = 0;
-    let scalar = 0.01;
-    let speed = 0.01;
+
+    console.log("p5js library loaded") 
     
     p.setup = function() {
-      RNBOsetup();
-      p.createCanvas(700, 700);
-      p.background(10);
-    }
-    
-    p.draw = function() {
+        RNBOsetup();  
+        console.log("p5js setup working")
+        p.createCanvas(400, 400);
+    } 
+   
+    p.draw = function() {  
       p.background(255);
+    //   p.ellipse(200, 200, 50, 50);
+      console.log("Slider 0 value:", sliders[0].value());
+      console.log("Slider 1 value:", sliders[1].value());
+
       let sliderVal = sliders[0].value();
       let sliderVal1 = sliders[1].value();
-      for (let i = 0; i < 900; i++) {
-        let x = p.width/2 + (scalar + i * 9) * p.cos(angle + i * 9);
-        let y = p.height/2 + (scalar + i * 9) * p.sin(angle + i * 9);
-        p.stroke(0);
-        p.fill(0, 128, 128);
-        p.ellipse(x, y, 50, 50);
-      }
-      angle += speed*(sliderVal/3);
-      scalar += p.sin(angle);
-    } 
-  } 
+    //   console.log("slider valueeee", sliders[0].value) 
+      p.ellipse(200, 200, sliderVal * .75, sliderVal * .75);
+      p.ellipse(200, 200, sliderVal1 * .75, sliderVal1 * .75);
+      
+    }  
+  }
+
+myp5 = new p5(sketch);
+
+// let sketch = function(p) {
+//     let angle = 0;
+//     let scalar = 0.01;
+//     let speed = 0.01;
+    
+//     p.setup = function() {
+//       RNBOsetup();
+//       p.createCanvas(700, 700);
+//       p.background(10);
+//     }
+    
+//     p.draw = function() {
+//       p.background(255);
+//       let sliderVal = sliders[0].value();
+//       let sliderVal1 = sliders[1].value();
+//       for (let i = 0; i < 900; i++) {
+//         let x = p.width/2 + (scalar + i * 9) * p.cos(angle + i * 9);
+//         let y = p.height/2 + (scalar + i * 9) * p.sin(angle + i * 9);
+//         p.stroke(0);
+//         p.fill(0, 128, 128);
+//         p.ellipse(x, y, 50, 50);
+//       }
+//       angle += speed*(sliderVal/3);
+//       scalar += p.sin(angle);
+//     } 
+//   } 
    
-  myp5 = new p5(sketch);
+//   myp5 = new p5(sketch);
   
 
 
@@ -79,7 +79,7 @@ async function RNBOsetup() {
 
     // Create gain node and connect it to audio output
     const outputNode = context.createGain();
-    outputNode.connect(context.destination); 
+    outputNode.connect(context.destination);  
 
   
     // Fetch the exported patcher
@@ -128,7 +128,7 @@ async function RNBOsetup() {
     // Connect the device to the web audio graph
     device.node.connect(outputNode);
 
-    makeP5jsSliders(myp5,device);
+    
 
     document.body.onclick = () => {
         context.resume();
@@ -157,6 +157,8 @@ async function RNBOsetup() {
     // Skip if you're not using guardrails.js
     if (typeof guardrails === "function")
         guardrails();
+
+    makeP5jsSliders(myp5,device);
 
     device.parameters.forEach(param => {
         console.log("Param Id: ", param.id)
