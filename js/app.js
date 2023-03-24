@@ -3,6 +3,7 @@
 //To do - make a for each loop inside of rnbo initialization function.
 
 let device;
+let numberOfDeviceParameters;
 let myp5;
 let sliders = [];
 
@@ -11,16 +12,16 @@ let sketch = function(p) {
     console.log("p5js library loaded") 
 
     p.setup = async function() {
-        await RNBOsetup();  
+        await RNBOsetup();   
         console.log("p5js setup working")
         p.createCanvas(400, 400);
     } 
-   
+    
     p.draw = function() {
         p.background(255);
     
         // Check if sliders array has at least two elements
-        if (sliders.length >= 2) {
+        if (sliders.length >= numberOfDeviceParameters) {
             console.log("Slider 0 value:", sliders[0].value());
             console.log("Slider 1 value:", sliders[1].value());
     
@@ -155,6 +156,8 @@ async function RNBOsetup() {
             outputNode.gain.linearRampToValueAtTime(targetGain, context.currentTime + rampDuration);
           }
         });  
+
+    numberOfDeviceParameters = device.parameters.length;
 
     // Skip if you're not using guardrails.js
     if (typeof guardrails === "function")
