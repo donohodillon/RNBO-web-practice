@@ -3,35 +3,71 @@
 //To do - make a for each loop inside of rnbo initialization function.
 
 let device;
+let numberOfDeviceParameters;
+let myp5;
+let sliders = [];
 
 let sketch = function(p) {
-    console.log("p5js library loaded")
-    let slider;
-  
-    p.setup = function() {
-        RNBOsetup();
+
+    console.log("p5js library loaded") 
+
+    p.setup = async function() {
+        await RNBOsetup();   
         console.log("p5js setup working")
-        slider = p.createSlider(20, 300, 20);
-        slider.position(10, 10);
-        slider.input(() => {
-            let parameterMap = device.parameters;
-            
-            parameterMap[0].value = slider.value();
-    
-            console.log(parameterMap[0].value, slider.value());
-          }); 
         p.createCanvas(400, 400);
+    } 
+    
+    p.draw = function() {
+        p.background(255);
+    
+        // Check if sliders array has at least two elements
+        if (sliders.length >= numberOfDeviceParameters) {
+            console.log("Slider 0 value:", sliders[0].value());
+            console.log("Slider 1 value:", sliders[1].value());
+    
+            let sliderVal = sliders[0].value();
+            let sliderVal1 = sliders[1].value();
+            p.ellipse(200, 200, sliderVal * .75, sliderVal * .75);
+            p.ellipse(200, 200, sliderVal1 * .75, sliderVal1 * .75);
+        }
     }
-  
-    p.draw = function() {  
-      p.background(220);
-      let sliderVal = slider.value();
-      p.ellipse(200, 200, sliderVal * .75, sliderVal * .75);
-    }
+     
   }
 
-let myp5 = new p5(sketch);
+myp5 = new p5(sketch);
 
+// let sketch = function(p) {
+//     let angle = 0;
+//     let scalar = 0.01;
+//     let speed = 0.01;
+    
+//     p.setup = function() {
+//       RNBOsetup();
+//       p.createCanvas(700, 700);
+//       p.background(10);
+//     }
+    
+//     p.draw = function() {
+//       p.background(255);
+//       let sliderVal = sliders[0].value();
+//       let sliderVal1 = sliders[1].value();
+//       for (let i = 0; i < 900; i++) {
+//         let x = p.width/2 + (scalar + i * 9) * p.cos(angle + i * 9);
+//         let y = p.height/2 + (scalar + i * 9) * p.sin(angle + i * 9);
+//         p.stroke(0);
+//         p.fill(0, 128, 128);
+//         p.ellipse(x, y, 50, 50);
+//       }
+//       angle += speed*(sliderVal/3);
+//       scalar += p.sin(angle);
+//     } 
+//   } 
+   
+//   myp5 = new p5(sketch);
+  
+
+
+ 
 //RNBO SECTION
 async function RNBOsetup() {
     const patchExportURL = "export/patch.exportSAW.json";
@@ -46,31 +82,12 @@ async function RNBOsetup() {
 
     // Create gain node and connect it to audio output
     const outputNode = context.createGain();
-    outputNode.connect(context.destination); 
+    outputNode.connect(context.destination);  
 
-    // Creates stop playback button with spacebar
-
-    let isVolumeOn = true;
-
-    window.addEventListener('keydown', event => {
-        if (event.code === 'Space') {
-          // toggle volume on/off
-          isVolumeOn = !isVolumeOn;
-          console.log("keydown event");
-          
-          // set gain value with linear ramp
-          const currentGain = outputNode.gain.value;
-          const targetGain = isVolumeOn ? 1 : 0;
-          const rampDuration = 0.1; // adjust as needed
-          outputNode.gain.cancelScheduledValues(context.currentTime);
-          outputNode.gain.setValueAtTime(currentGain, context.currentTime);
-          outputNode.gain.linearRampToValueAtTime(targetGain, context.currentTime + rampDuration);
-        }
-      });
-    
+  
     // Fetch the exported patcher
     let response, patcher;
-    try {
+    try { 
         response = await fetch(patchExportURL);
         patcher = await response.json();
     
@@ -99,17 +116,6 @@ async function RNBOsetup() {
         }
         return;
     }
-    
-    // (Optional) Fetch the dependencies
-    let dependencies = [];
-    try {
-        const dependenciesResponse = await fetch("export/dependencies.json");
-        dependencies = await dependenciesResponse.json();
-
-        // Prepend "export" to any file dependenciies
-        dependencies = dependencies.map(d => d.file ? Object.assign({}, d, { file: "export/" + d.file }) : d);
-    } catch (e) {}
-
     // Create the device
     try {
         device = await RNBO.createDevice({ context, patcher });
@@ -122,47 +128,49 @@ async function RNBOsetup() {
         return;
     }
 
+    // Connect the device to the web audio graph
+    device.node.connect(outputNode);
+
+    
+
+    document.body.onclick = () => {
+        context.resume();
+    }
+
+      // Creates stop playback button with spacebar
+
+      let isVolumeOn = true;
+
+      window.addEventListener('keydown', event => {
+          if (event.code === 'Space') {
+            // toggle volume on/off
+            isVolumeOn = !isVolumeOn;
+            console.log("keydown event");
+            
+            // set gain value with linear ramp
+            const currentGain = outputNode.gain.value;
+            const targetGain = isVolumeOn ? 1 : 0;
+            const rampDuration = 0.1; // adjust as needed
+            outputNode.gain.cancelScheduledValues(context.currentTime);
+            outputNode.gain.setValueAtTime(currentGain, context.currentTime);
+            outputNode.gain.linearRampToValueAtTime(targetGain, context.currentTime + rampDuration);
+          }
+        });  
+
+    numberOfDeviceParameters = device.parameters.length;
+
+    // Skip if you're not using guardrails.js
+    if (typeof guardrails === "function")
+        guardrails();
+
+    makeP5jsSliders(myp5,device);
+
     device.parameters.forEach(param => {
         console.log("Param Id: ", param.id)
         console.log("Param Name: ", param.name)
         console.log("Param Min: ", param.min)
         console.log("Param Max: ", param.max) 
     })
-
-    
-
-    // (Optional) Load the samples
-    if (dependencies.length)
-        await device.loadDataBufferDependencies(dependencies);
-
-    // Connect the device to the web audio graph
-    device.node.connect(outputNode);
-
-    // (Optional) Extract the name and rnbo version of the patcher from the description
-    // document.getElementById("patcher-title").innerText = (patcher.desc.meta.filename || "Unnamed Patcher") + " (v" + patcher.desc.meta.rnboversion + ")";
-
-    // (Optional) Automatically create sliders for the device parameters
-    // makeSliders(device);
-
-    // (Optional) Create a form to send messages to RNBO inputs
-    // makeInportForm(device);
-
-    // // (Optional) Attach listeners to outports so you can log messages from the RNBO patcher
-    // attachOutports(device);
-
-    // // (Optional) Load presets, if any
-    // loadPresets(device, patcher);
-
-    // // (Optional) Connect MIDI inputs
-    // makeMIDIKeyboard(device);
-
-    document.body.onclick = () => {
-        context.resume();
-    }
-
-    // Skip if you're not using guardrails.js
-    if (typeof guardrails === "function")
-        guardrails();
 
 }
 
@@ -182,10 +190,28 @@ function loadRNBOScript(version) {
     });
 }
 
+function makeP5jsSliders(myp5, device) {
+    let offset = 0;
+    console.log("p5jsslidersfunction")
+    device.parameters.forEach((param, index)=>{
+        let slider = myp5.createSlider(param.min, param.max, param.min);
+        console.log("slider created")
+        slider.position(10, 10 + offset);
+        slider.input(() => {
+            let parameterMap = device.parameters;
+            parameterMap[index].value = slider.value();
+            // console.log(parameterMap[index].value, slider.value());
+
+          }); 
+        sliders.push(slider);
+        offset += 30;
+    })
+}
+
 function makeSliders(device) {
-    let pdiv = document.getElementById("rnbo-parameter-sliders");
-    let noParamLabel = document.getElementById("no-param-label");
-    if (noParamLabel && device.numParameters > 0) pdiv.removeChild(noParamLabel);
+    // let pdiv = document.getElementById("rnbo-parameter-sliders");
+    // let noParamLabel = document.getElementById("no-param-label");
+    // if (noParamLabel && device.numParameters > 0) pdiv.removeChild(noParamLabel);
     console.log("Make sliders function called")
 
     // This will allow us to ignore parameter update events while dragging the slider.
