@@ -14,9 +14,9 @@ let sketch = function(p) {
     p.setup = async function() {
         await RNBOsetup();   
         console.log("p5js setup working")
-        p.createCanvas(400, 400);
+        p.createCanvas(p.windowWidth, p.windowHeight);
     } 
-    
+     
     p.draw = function() {
         p.background(255);
     
@@ -44,8 +44,8 @@ let sketch = function(p) {
             sliders[0].value(device.parameters[0].value);
             sliders[1].value(device.parameters[1].value);
         
-            p.ellipse(200, 200, sliderVal * .75, sliderVal * .75);
-            p.ellipse(200, 200, sliderVal1 * .75, sliderVal1 * .75);
+            p.ellipse(p.width/2, p.height/2, sliderVal * .25, sliderVal * .25);
+            p.ellipse(p.width/2, p.height/2, sliderVal1 * .25, sliderVal1 * .25);
         }
     }
      
