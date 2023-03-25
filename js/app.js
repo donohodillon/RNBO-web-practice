@@ -70,7 +70,7 @@ myp5 = new p5(sketch);
  
 //RNBO SECTION
 async function RNBOsetup() {
-    const patchExportURL = "export/patch.simple-sampler-export.json";
+    const patchExportURL = "export/patch.simple-sampler-export2.json"; 
     console.log("RNBO setup working")
 
     // Create AudioContext
@@ -116,6 +116,17 @@ async function RNBOsetup() {
         }
         return;
     }
+
+    // (Optional) Fetch the dependencies
+    let dependencies = [];
+    try {
+        const dependenciesResponse = await fetch("export/dependencies.json");
+        dependencies = await dependenciesResponse.json();
+
+        // Prepend "export" to any file dependenciies
+        dependencies = dependencies.map(d => d.file ? Object.assign({}, d, { file: "export/" + d.file }) : d);
+    } catch (e) {}
+
     // Create the device
     try {
         device = await RNBO.createDevice({ context, patcher });
@@ -128,10 +139,12 @@ async function RNBOsetup() {
         return;
     }
 
+     // (Optional) Load the samples
+     if (dependencies.length)
+     await device.loadDataBufferDependencies(dependencies);
+
     // Connect the device to the web audio graph
     device.node.connect(outputNode);
-
-    
 
     document.body.onclick = () => {
         context.resume();
