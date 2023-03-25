@@ -70,7 +70,7 @@ myp5 = new p5(sketch);
  
 //RNBO SECTION
 async function RNBOsetup() {
-    const patchExportURL = "export/patch.exportSAW.json";
+    const patchExportURL = "export/patch.simple-sampler-export.json";
     console.log("RNBO setup working")
 
     // Create AudioContext
