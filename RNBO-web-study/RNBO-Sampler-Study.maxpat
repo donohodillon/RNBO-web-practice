@@ -242,7 +242,7 @@
 										"exponent" : 1.0
 									}
 ,
-									"rnbo_serial" : 5,
+									"rnbo_serial" : 1,
 									"rnbo_uniqueid" : "length",
 									"rnboinfo" : 									{
 										"needsInstanceInfo" : 1,
@@ -663,7 +663,7 @@
 										"exponent" : 1.0
 									}
 ,
-									"rnbo_serial" : 3,
+									"rnbo_serial" : 2,
 									"rnbo_uniqueid" : "offset",
 									"rnboinfo" : 									{
 										"needsInstanceInfo" : 1,
@@ -1090,7 +1090,7 @@
 									"outlettype" : [ "" ],
 									"patching_rect" : [ 233.0, 292.0, 56.0, 23.0 ],
 									"rnbo_classname" : "loadbang",
-									"rnbo_serial" : 2,
+									"rnbo_serial" : 1,
 									"rnbo_uniqueid" : "loadbang_obj-37",
 									"text" : "loadbang"
 								}
@@ -1130,7 +1130,7 @@
 										"syncmode" : "phase"
 									}
 ,
-									"rnbo_serial" : 6,
+									"rnbo_serial" : 1,
 									"rnbo_uniqueid" : "groove~_obj-15",
 									"rnboinfo" : 									{
 										"needsInstanceInfo" : 1,
@@ -1350,7 +1350,7 @@
 									"outlettype" : [ "" ],
 									"patching_rect" : [ 10.0, 6.0, 56.0, 23.0 ],
 									"rnbo_classname" : "loadbang",
-									"rnbo_serial" : 1,
+									"rnbo_serial" : 2,
 									"rnbo_uniqueid" : "loadbang_obj-10",
 									"text" : "loadbang"
 								}
@@ -1413,7 +1413,7 @@
 										"calccount" : 256.0
 									}
 ,
-									"rnbo_serial" : 2,
+									"rnbo_serial" : 1,
 									"rnbo_uniqueid" : "scope~_obj-9"
 								}
 
@@ -1980,11 +1980,11 @@
 						"snapshot" : 						{
 							"__presetid" : "0a28c377-cb33-11ed-8377-50ebf6ce3c3f",
 							"offset" : 							{
-								"value" : 200.0
+								"value" : 0.0
 							}
 ,
 							"length" : 							{
-								"value" : 243.0
+								"value" : 0.0
 							}
 
 						}
@@ -2003,11 +2003,11 @@
 									"snapshot" : 									{
 										"__presetid" : "0a28c377-cb33-11ed-8377-50ebf6ce3c3f",
 										"offset" : 										{
-											"value" : 200.0
+											"value" : 0.0
 										}
 ,
 										"length" : 										{
-											"value" : 243.0
+											"value" : 0.0
 										}
 
 									}
@@ -2112,7 +2112,7 @@
 , 			{
 				"name" : "untitled_20230325.maxsnap",
 				"bootpath" : "~/Documents/Max 8/Snapshots",
-				"patcherrelativepath" : "../Documents/Max 8/Snapshots",
+				"patcherrelativepath" : "../../Max 8/Snapshots",
 				"type" : "mx@s",
 				"implicit" : 1
 			}
