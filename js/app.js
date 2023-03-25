@@ -44,8 +44,8 @@ let sketch = function(p) {
             sliders[0].value(device.parameters[0].value);
             sliders[1].value(device.parameters[1].value);
         
-            p.ellipse(p.width/2, p.height/2, sliderVal * .25, sliderVal * .25);
-            p.ellipse(p.width/2, p.height/2, sliderVal1 * .25, sliderVal1 * .25);
+            p.ellipse(p.width/2, p.height/2, sliderVal * .005, sliderVal * .005);
+            p.ellipse(p.width/2, p.height/2, sliderVal1 * .005, sliderVal1 * .005);
         }
     }
      
