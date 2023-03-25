@@ -31,10 +31,14 @@ let sketch = function(p) {
         
             let sliderVal = sliders[0].value();
             let sliderVal1 = sliders[1].value();
+
+            let mappedX = p.map(p.mouseX, 0, p.width, device.parameters[0].min, device.parameters[0].max);
+            let mappedY = p.map(p.mouseY, 0, p.height, device.parameters[1].min, device.parameters[1].max);
+
         
             // Update the corresponding parameter values in the RNBO device
-            device.parameters[0].value = p.mouseX;
-            device.parameters[1].value = p.mouseY;
+            device.parameters[0].value = mappedX
+            device.parameters[1].value = mappedY
         
             // Update the slider values
             sliders[0].value(device.parameters[0].value);
