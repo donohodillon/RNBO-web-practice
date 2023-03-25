@@ -24,9 +24,22 @@ let sketch = function(p) {
         if (sliders.length >= numberOfDeviceParameters) {
             console.log("Slider 0 value:", sliders[0].value());
             console.log("Slider 1 value:", sliders[1].value());
-    
+            console.log("Device 0 value:", device.parameters[0].value);
+            console.log("Device 1 value:", device.parameters[1].value);
+            console.log("MouseX:", p.mouseX);
+            console.log("MouseY:", p.mouseY);
+        
             let sliderVal = sliders[0].value();
             let sliderVal1 = sliders[1].value();
+        
+            // Update the corresponding parameter values in the RNBO device
+            device.parameters[0].value = p.mouseX;
+            device.parameters[1].value = p.mouseY;
+        
+            // Update the slider values
+            sliders[0].value(device.parameters[0].value);
+            sliders[1].value(device.parameters[1].value);
+        
             p.ellipse(200, 200, sliderVal * .75, sliderVal * .75);
             p.ellipse(200, 200, sliderVal1 * .75, sliderVal1 * .75);
         }
@@ -214,6 +227,8 @@ function makeP5jsSliders(myp5, device) {
             let parameterMap = device.parameters;
             parameterMap[index].value = slider.value();
             // console.log(parameterMap[index].value, slider.value());
+            console.log(parameterMap[index].value, slider.value());
+             // update parameter value in RNBO device
 
           }); 
         sliders.push(slider);
