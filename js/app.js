@@ -6,52 +6,114 @@ let device;
 let numberOfDeviceParameters;
 let myp5;
 let sliders = [];
+let MySine, MySine2, v1, v2, x, y, r;
+let list = [];
 
-let sketch = function(p) {
-
-    console.log("p5js library loaded") 
-
-    p.setup = async function() {
-        await RNBOsetup();   
-        console.log("p5js setup working")
+function sketch(p) {
+    p.setup = function() {
+        RNBOsetup();
         p.createCanvas(p.windowWidth, p.windowHeight);
-    } 
-     
-    p.draw = function() {
-        p.background(255);
-    
-        // Check if sliders array has at least two elements
-        if (sliders.length >= numberOfDeviceParameters) {
-            console.log("Slider 0 value:", sliders[0].value());
-            console.log("Slider 1 value:", sliders[1].value());
-            console.log("Device 0 value:", device.parameters[0].value);
-            console.log("Device 1 value:", device.parameters[1].value);
-            console.log("MouseX:", p.mouseX);
-            console.log("MouseY:", p.mouseY);
-        
-            let sliderVal = sliders[0].value();
-            let sliderVal1 = sliders[1].value();
-
-            let mappedX = p.map(p.mouseX, 0, p.width, device.parameters[0].min, device.parameters[0].max);
-            let mappedY = p.map(p.mouseY, 0, p.height, device.parameters[1].min, device.parameters[1].max);
-
-        
-            // Update the corresponding parameter values in the RNBO device
-            device.parameters[0].value = mappedX
-            device.parameters[1].value = mappedY
-        
-            // Update the slider values
-            sliders[0].value(device.parameters[0].value);
-            sliders[1].value(device.parameters[1].value);
-        
-            p.ellipse(p.width/2, p.height/2, sliderVal * .005, sliderVal * .005);
-            p.ellipse(p.width/2, p.height/2, sliderVal1 * .005, sliderVal1 * .005);
-        }
     }
-     
-  }
+  
+    p.draw = function() {
+      p.background(0, 50);
+  
+      p.fill(255);
+      p.noStroke();
+  
+      p.translate(p.width / 2, p.height / 2);
 
-myp5 = new p5(sketch);
+      if (sliders.length >= numberOfDeviceParameters) {
+        // git pu
+    
+        let sliderVal = sliders[0].value();
+        let sliderVal1 = sliders[1].value();
+
+        let mappedX = p.map(p.mouseX, 0, p.width, device.parameters[0].min, device.parameters[0].max);
+        let mappedY = p.map(p.mouseY, 0, p.height, device.parameters[1].min, device.parameters[1].max);
+
+    
+        // Update the corresponding parameter values in the RNBO device
+        device.parameters[0].value = mappedX
+        device.parameters[1].value = mappedY
+     
+        // Update the slider values
+        // sliders[0].value(device.parameters[0].value);
+        // sliders[1].value(device.parameters[1].value);
+    
+        // p.ellipse(p.width/2, p.height/2, sliderVal * .03, sliderVal * .03);
+        // p.ellipse(p.width/2, p.height/2, sliderVal1 * .03, sliderVal1 * .03);
+        MySine = (p.sin((p.frameCount * (p.mouseX/75)) / 100 - p.PI/2));
+      MySine2 = p.sin((p.frameCount * (p.mouseX/75))  / 1000 + p.PI/2);  
+  
+      v1 = p.map(MySine, -1, 1, 0, p.width / 2 - r / 2);
+      v2 = p.map(MySine2, -1, 1, 0, p.width / 2 - r / 2); 
+  
+      list=[      0,      v1,      -v1,      v2,      -v2,      v1-v2,      -v1-v2,      v1+v2,      -(v1+v2),      v2-v1,      -v2-v1    ];
+  
+      x = list;
+      y = list;
+  
+      r = p.map(MySine, -1, 1, 1, 10)*2;
+  
+      for (let j = 0; j < y.length; j++) {
+        for (let i = 0; i < x.length; i++) {
+          if (i === 0 && j===0) {
+            continue;
+          }
+  
+          p.circle(x[i], y[j], r);
+        }
+      } 
+    }
+  
+      
+      
+    }
+  } 
+  
+  myp5 = new p5(sketch);
+
+// let sketch = function(p) {
+
+//     console.log("p5js library loaded") 
+
+//     p.setup = async function() {
+//         await RNBOsetup();   
+//         console.log("p5js setup working")
+//         p.createCanvas(p.windowWidth, p.windowHeight);
+//     } 
+     
+//     p.draw = function() {
+//         p.background(255);
+    
+//         // Check if sliders array has at least two elements
+//         if (sliders.length >= numberOfDeviceParameters) {
+//             // git pu
+        
+//             let sliderVal = sliders[0].value();
+//             let sliderVal1 = sliders[1].value();
+
+//             let mappedX = p.map(p.mouseX, 0, p.width, device.parameters[0].min, device.parameters[0].max);
+//             let mappedY = p.map(p.mouseY, 0, p.height, device.parameters[1].min, device.parameters[1].max);
+
+        
+//             // Update the corresponding parameter values in the RNBO device
+//             device.parameters[0].value = mappedX
+//             device.parameters[1].value = mappedY
+         
+//             // Update the slider values
+//             sliders[0].value(device.parameters[0].value);
+//             sliders[1].value(device.parameters[1].value);
+        
+//             p.ellipse(p.width/2, p.height/2, sliderVal * .03, sliderVal * .03);
+//             p.ellipse(p.width/2, p.height/2, sliderVal1 * .03, sliderVal1 * .03);
+//         }
+//     }
+     
+//   } 
+
+// myp5 = new p5(sketch);
 
 // let sketch = function(p) {
 //     let angle = 0;
