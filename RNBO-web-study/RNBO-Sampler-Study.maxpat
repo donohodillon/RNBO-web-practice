@@ -118,7 +118,7 @@
 									"numinlets" : 1,
 									"numoutlets" : 1,
 									"outlettype" : [ "" ],
-									"patching_rect" : [ 733.0, 228.5, 74.0, 23.0 ],
+									"patching_rect" : [ 733.0, 221.5, 74.0, 23.0 ],
 									"rnbo_classname" : "loadmess",
 									"rnbo_serial" : 2,
 									"rnbo_uniqueid" : "loadmess_obj-11",
@@ -315,7 +315,7 @@
 									"numinlets" : 2,
 									"numoutlets" : 1,
 									"outlettype" : [ "signal" ],
-									"patching_rect" : [ 644.0, 256.5, 108.0, 23.0 ],
+									"patching_rect" : [ 644.0, 253.5, 108.0, 23.0 ],
 									"rnbo_classname" : "gen~",
 									"rnbo_extra_attributes" : 									{
 										"exposeparams" : 0
@@ -1258,7 +1258,7 @@
 										"triggers" : ""
 									}
 ,
-									"rnbo_serial" : 1,
+									"rnbo_serial" : 2,
 									"rnbo_uniqueid" : "t_obj-43",
 									"rnboinfo" : 									{
 										"needsInstanceInfo" : 1,
@@ -1346,7 +1346,7 @@
 									"numinlets" : 2,
 									"numoutlets" : 2,
 									"outlettype" : [ "", "" ],
-									"patching_rect" : [ 644.0, 160.5, 286.0, 23.0 ],
+									"patching_rect" : [ 644.0, 160.5, 279.0, 23.0 ],
 									"rnbo_classname" : "param",
 									"rnbo_extra_attributes" : 									{
 										"exponent" : 2.0,
@@ -1364,7 +1364,7 @@
 										"meta" : ""
 									}
 ,
-									"rnbo_serial" : 2,
+									"rnbo_serial" : 4,
 									"rnbo_uniqueid" : "length",
 									"rnboinfo" : 									{
 										"needsInstanceInfo" : 1,
@@ -1755,7 +1755,7 @@
 										"changesPatcherIO" : 0
 									}
 ,
-									"text" : "param @name length @min 0 @value 0 @max 24000",
+									"text" : "param @name length @min 0 @value 0 @max 6000",
 									"varname" : "length"
 								}
 
@@ -3174,15 +3174,15 @@
 						"snapshot" : 						{
 							"__presetid" : "0a28c377-cb33-11ed-8377-50ebf6ce3c3f",
 							"rate" : 							{
-								"value" : 1.407
+								"value" : 1.01
 							}
 ,
 							"offset" : 							{
-								"value" : 0.0
+								"value" : 18043.0
 							}
 ,
 							"length" : 							{
-								"value" : 0.0
+								"value" : 13.0
 							}
 
 						}
@@ -3201,15 +3201,15 @@
 									"snapshot" : 									{
 										"__presetid" : "0a28c377-cb33-11ed-8377-50ebf6ce3c3f",
 										"rate" : 										{
-											"value" : 1.407
+											"value" : 1.01
 										}
 ,
 										"offset" : 										{
-											"value" : 0.0
+											"value" : 18043.0
 										}
 ,
 										"length" : 										{
-											"value" : 0.0
+											"value" : 13.0
 										}
 
 									}
