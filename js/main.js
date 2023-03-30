@@ -124,7 +124,7 @@ function makeP5jsSliders() {
             let parameterMap = device.parameters;
             parameterMap[index].value = slider.value();
             // console.log(parameterMap[index].value, slider.value());
-            console.log(parameterMap[index].value, slider.value());
+            // console.log(parameterMap[index].value, slider.value());
              // update parameter value in RNBO device
 
           }); 
