@@ -1,5 +1,5 @@
 
-async function RNBOsetup(patchFileURL, sliders, device) {
+async function RNBOsetup(patchFileURL) {
     console.log("RNBO setup working")
 
     // Create AudioContext
@@ -86,15 +86,15 @@ async function RNBOsetup(patchFileURL, sliders, device) {
 
     numberOfDeviceParameters = device.parameters.length;
 
-    makeP5jsSliders(device, sliders);
+    // makeP5jsSliders(device, sliders);
 
     // Log out parameter attributes for debugging
-    device.parameters.forEach(param => {
-        console.log("Param Id: ", param.id)
-        console.log("Param Name: ", param.name)
-        console.log("Param Min: ", param.min)
-        console.log("Param Max: ", param.max) 
-    })
+    // device.parameters.forEach(param => {
+    //     console.log("Param Id: ", param.id)
+    //     console.log("Param Name: ", param.name)
+    //     console.log("Param Min: ", param.min)
+    //     console.log("Param Max: ", param.max) 
+    // })
 }
 
 function loadRNBOScript(version) {
@@ -113,7 +113,7 @@ function loadRNBOScript(version) {
     });
 }
 
-function makeP5jsSliders(device, sliders) {
+function makeP5jsSliders() {
     let offset = 0;
     console.log("p5jsslidersfunction")
     device.parameters.forEach((param, index)=>{
