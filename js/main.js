@@ -1,8 +1,5 @@
-let device;
-let numberOfDeviceParameters;
 
-
-async function RNBOsetup(patchFileURL) {
+async function RNBOsetup(patchFileURL, sliders, device) {
     console.log("RNBO setup working")
 
     // Create AudioContext
@@ -31,21 +28,6 @@ async function RNBOsetup(patchFileURL) {
         }
 
     } catch (err) {
-        const errorContext = {
-            error: err
-        };
-        if (response && (response.status >= 300 || response.status < 200)) {
-            errorContext.header = `Couldn't load patcher export bundle`,
-            errorContext.description = `Check app.js to see what file it's trying to load. Currently it's` +
-            ` trying to load "${patchExportURL}". If that doesn't` + 
-            ` match the name of the file you exported from RNBO, modify` + 
-            ` patchExportURL in app.js.`;
-        }
-        if (typeof guardrails === "function") {
-            guardrails(errorContext);
-        } else {
-            throw err;
-        }
         return;
     }
 
@@ -106,13 +88,13 @@ async function RNBOsetup(patchFileURL) {
 
     makeP5jsSliders(device, sliders);
 
+    // Log out parameter attributes for debugging
     device.parameters.forEach(param => {
         console.log("Param Id: ", param.id)
         console.log("Param Name: ", param.name)
         console.log("Param Min: ", param.min)
         console.log("Param Max: ", param.max) 
     })
-
 }
 
 function loadRNBOScript(version) {
