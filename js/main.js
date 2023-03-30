@@ -11,7 +11,7 @@ let list = [];
 
 function sketch(p) {
     p.setup = function() {
-        RNBOsetup();
+        RNBOsetup('export/patch.simple-sampler-export2.json');
         p.createCanvas(p.windowWidth, p.windowHeight);
     }
   
@@ -66,90 +66,13 @@ function sketch(p) {
         }
       } 
     }
-  
-      
-      
     }
   } 
   
   myp5 = new p5(sketch);
 
-// let sketch = function(p) {
-
-//     console.log("p5js library loaded") 
-
-//     p.setup = async function() {
-//         await RNBOsetup();   
-//         console.log("p5js setup working")
-//         p.createCanvas(p.windowWidth, p.windowHeight);
-//     } 
-     
-//     p.draw = function() {
-//         p.background(255);
-    
-//         // Check if sliders array has at least two elements
-//         if (sliders.length >= numberOfDeviceParameters) {
-//             // git pu
-        
-//             let sliderVal = sliders[0].value();
-//             let sliderVal1 = sliders[1].value();
-
-//             let mappedX = p.map(p.mouseX, 0, p.width, device.parameters[0].min, device.parameters[0].max);
-//             let mappedY = p.map(p.mouseY, 0, p.height, device.parameters[1].min, device.parameters[1].max);
-
-        
-//             // Update the corresponding parameter values in the RNBO device
-//             device.parameters[0].value = mappedX
-//             device.parameters[1].value = mappedY
-         
-//             // Update the slider values
-//             sliders[0].value(device.parameters[0].value);
-//             sliders[1].value(device.parameters[1].value);
-        
-//             p.ellipse(p.width/2, p.height/2, sliderVal * .03, sliderVal * .03);
-//             p.ellipse(p.width/2, p.height/2, sliderVal1 * .03, sliderVal1 * .03);
-//         }
-//     }
-     
-//   } 
-
-// myp5 = new p5(sketch);
-
-// let sketch = function(p) {
-//     let angle = 0;
-//     let scalar = 0.01;
-//     let speed = 0.01;
-    
-//     p.setup = function() {
-//       RNBOsetup();
-//       p.createCanvas(700, 700);
-//       p.background(10);
-//     }
-    
-//     p.draw = function() {
-//       p.background(255);
-//       let sliderVal = sliders[0].value();
-//       let sliderVal1 = sliders[1].value();
-//       for (let i = 0; i < 900; i++) {
-//         let x = p.width/2 + (scalar + i * 9) * p.cos(angle + i * 9);
-//         let y = p.height/2 + (scalar + i * 9) * p.sin(angle + i * 9);
-//         p.stroke(0);
-//         p.fill(0, 128, 128);
-//         p.ellipse(x, y, 50, 50);
-//       }
-//       angle += speed*(sliderVal/3);
-//       scalar += p.sin(angle);
-//     } 
-//   } 
-   
-//   myp5 = new p5(sketch);
   
-
-
- 
-//RNBO SECTION
-async function RNBOsetup() {
-    const patchExportURL = "export/patch.simple-sampler-export2.json"; 
+async function RNBOsetup(patchFileURL) {
     console.log("RNBO setup working")
 
     // Create AudioContext
@@ -167,7 +90,7 @@ async function RNBOsetup() {
     // Fetch the exported patcher
     let response, patcher;
     try { 
-        response = await fetch(patchExportURL);
+        response = await fetch(patchFileURL);
         patcher = await response.json();
     
         if (!window.RNBO) {
@@ -266,6 +189,7 @@ async function RNBOsetup() {
 
 }
 
+//Main.js
 function loadRNBOScript(version) {
     return new Promise((resolve, reject) => {
         if (/^\d+\.\d+\.\d+-dev$/.test(version)) {
@@ -281,7 +205,7 @@ function loadRNBOScript(version) {
         document.body.append(el);
     });
 }
-
+//Individual RNBO proj files
 function makeP5jsSliders(myp5, device) {
     let offset = 0;
     console.log("p5jsslidersfunction")
@@ -302,107 +226,6 @@ function makeP5jsSliders(myp5, device) {
     })
 }
 
-function makeSliders(device) {
-    // let pdiv = document.getElementById("rnbo-parameter-sliders");
-    // let noParamLabel = document.getElementById("no-param-label");
-    // if (noParamLabel && device.numParameters > 0) pdiv.removeChild(noParamLabel);
-    console.log("Make sliders function called")
-
-    // This will allow us to ignore parameter update events while dragging the slider.
-    let isDraggingSlider = false;
-    let uiElements = {};
-
-    device.parameters.forEach(param => {
-        // Subpatchers also have params. If we want to expose top-level
-        // params only, the best way to determine if a parameter is top level
-        // or not is to exclude parameters with a '/' in them.
-        // You can uncomment the following line if you don't want to include subpatcher params
-        
-        //if (param.id.includes("/")) return;
-
-        // Create a label, an input slider and a value display
-        let label = document.createElement("label");
-        let slider = document.createElement("input");
-        let text = document.createElement("input"); 
-        let sliderContainer = document.createElement("div");
-        sliderContainer.appendChild(label);
-        sliderContainer.appendChild(slider);
-        sliderContainer.appendChild(text);
-
-        // Add a name for the label
-        label.setAttribute("name", param.name);
-        label.setAttribute("for", param.name);
-        label.setAttribute("class", "param-label");
-        label.textContent = `${param.name}: `;
-
-        // Make each slider reflect its parameter
-        slider.setAttribute("type", "range");
-        slider.setAttribute("class", "param-slider");
-        slider.setAttribute("id", param.id);
-        slider.setAttribute("name", param.name);
-        slider.setAttribute("min", param.min);
-        slider.setAttribute("max", param.max);
-
-        //Console messages 
-        
-
-        //Set step attributes
-        if (param.steps > 1) {
-            slider.setAttribute("step", (param.max - param.min) / (param.steps - 1));
-        } else {
-            slider.setAttribute("step", (param.max - param.min) / 1000.0);
-        }
-        slider.setAttribute("value", param.value);
-
-        // Make a settable text input display for the value
-        text.setAttribute("value", param.value.toFixed(1));
-        text.setAttribute("type", "text");
-
-        // Make each slider control its parameter
-        slider.addEventListener("pointerdown", () => {
-            isDraggingSlider = true;
-        });
-        slider.addEventListener("pointerup", () => {
-            isDraggingSlider = false;
-            slider.value = param.value;
-            text.value = param.value.toFixed(1);
-            console.log(param.name, ":", slider.value);
-        });
-        slider.addEventListener("input", () => {
-            let value = Number.parseFloat(slider.value);
-            param.value = value;
-        });
-
-        // Make the text box input control the parameter value as well
-        text.addEventListener("keydown", (ev) => {
-            if (ev.key === "Enter") {
-                let newValue = Number.parseFloat(text.value);
-                if (isNaN(newValue)) {
-                    text.value = param.value;
-                } else {
-                    newValue = Math.min(newValue, param.max);
-                    newValue = Math.max(newValue, param.min);
-                    text.value = newValue;
-                    param.value = newValue;
-                }
-            }
-        });
-
-        // Store the slider and text by name so we can access them later
-        uiElements[param.id] = { slider, text };
-
-        // Add the slider element
-        pdiv.appendChild(sliderContainer);
-      
-    });
-
-    // Listen to parameter changes from the device
-    device.parameterChangeEvent.subscribe(param => {
-        if (!isDraggingSlider)
-            uiElements[param.id].slider.value = param.value;
-        uiElements[param.id].text.value = param.value.toFixed(1);
-    });
-}
 
 function makeInportForm(device) {
     const idiv = document.getElementById("rnbo-inports");
