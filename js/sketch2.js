@@ -16,10 +16,14 @@ let _lightNum;
 let speedSlider;
 let speedFactor = 1; // Declare a variable for the current speed factor
 let targetSpeedFactor = 1;
-
+let sliderVal1Factor = 1; // Declare a variable for the current sliderVal1 factor
+let targetSliderVal1Factor = 1;
 
 
 async function setup() {
+  await RNBOsetup('export/patch.exportSAW.json');
+  makeP5jsSliders(); 
+
   createCanvas(windowWidth, windowHeight, WEBGL);
 
   
@@ -27,10 +31,11 @@ async function setup() {
   speedSlider = createSlider(0.1, 2, 1, 0.01); // Min: 0.1, Max: 2, Initial: 1, Step: 0.01
   speedSlider.position(10, height - 30);
 
-  await RNBOsetup('export/patch.simple-sampler-export2.json');
-  makeP5jsSliders(); 
-  console.log(sliders);
-  console.log(sliders[0]);
+  
+  // console.log('Slider Array: ', sliders);
+  // console.log('Slider Value: ', sliders[0].value);
+  // console.log('Slider Value: ', sliders[0].value());
+
 
   frameRate(60); 
   noStroke();  
@@ -79,10 +84,17 @@ async function setup() {
 }
  
 function draw() {
+
+  //IMPORTANT: Make sure you're checking that the sliders array is full before you use it
+
+  if (sliders.length > 0) {
   background(0);
-  // let sliderVal = sliders[0].value();
-  // let sliderVal1 = sliders[1].value();
-  
+  targetSliderVal1Factor = sliders[0].value();
+
+// Gradually interpolate the current sliderVal1 factor towards the target sliderVal1 factor
+  let sliderInterpolationAmount = 0.05; // Controls the speed of interpolation (0 to 1)
+  sliderVal1Factor += (targetSliderVal1Factor - sliderVal1Factor) * sliderInterpolationAmount;
+
   targetSpeedFactor = speedSlider.value();
 
   // Gradually interpolate the current speed factor towards the target speed factor
@@ -109,8 +121,8 @@ function draw() {
   }
   
   push();
-  rotateX(_count / (200 / speedFactor));
-  rotateY(_count / (200 / speedFactor));
+  rotateX((_count / (200 / speedFactor)) * (sliderVal1Factor)/10*-1); // Multiply by sliderVal
+  rotateY((_count / (200 / speedFactor)) * (sliderVal1Factor)/10*-1); // Multiply by sliderVal1
   rotateZ(_count / (150 / speedFactor));
   for (let i = 0; i < _tileNum; i++) {
     for (let j = 0; j < _tileNum; j++) {
@@ -131,7 +143,11 @@ function draw() {
   pop();
 
   _count++;
+
+    console.log('Slider Value: ', sliders[0].value());
+  }
 }
+
 
 function mouseReleased() {
   _aryXYZ = [];
@@ -171,4 +187,6 @@ function mouseReleased() {
   }
 
   _count = random(1000);
+  
 }
+
