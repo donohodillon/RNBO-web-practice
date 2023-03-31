@@ -80,7 +80,8 @@ async function setup() {
  
 function draw() {
   background(0);
-
+  // let sliderVal = sliders[0].value();
+  // let sliderVal1 = sliders[1].value();
   
   targetSpeedFactor = speedSlider.value();
 
