@@ -11,6 +11,7 @@ async function setup() {
   makeP5jsSliders(); 
 
   createCanvas(400, 400, WEBGL);
+  frameRate(120);
 	noStroke();
 }
  
@@ -22,7 +23,7 @@ function draw() {
   sliderValue = sliders[0].value();  
   [3, 3, -3].map(i => pointLight([255], 0, -400 * i, 0));
 	let e = 180;
-	rotateY((f+(sliderValue*2)) / e);
+	rotateY((f+(sliderValue*4)) / e);
 	for (y = -e; y <= e; y += 30) {
 		for (z = -e; z <= e; z += 30) {
 			for (x = -e; x <= e; x += 30) {
