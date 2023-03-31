@@ -33,7 +33,7 @@
         "index": 1,
         "name": "vol1",
         "paramId": "vol1",
-        "minimum": -60,
+        "minimum": -20,
         "maximum": 0,
         "exponent": 1,
         "steps": 0,

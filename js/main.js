@@ -86,15 +86,13 @@ async function RNBOsetup(patchFileURL) {
 
     numberOfDeviceParameters = device.parameters.length;
 
-    // makeP5jsSliders(device, sliders);
-
     // Log out parameter attributes for debugging
-    // device.parameters.forEach(param => {
-    //     console.log("Param Id: ", param.id)
-    //     console.log("Param Name: ", param.name)
-    //     console.log("Param Min: ", param.min)
-    //     console.log("Param Max: ", param.max) 
-    // })
+    device.parameters.forEach(param => {
+        console.log("Param Id: ", param.id)
+        console.log("Param Name: ", param.name)
+        console.log("Param Min: ", param.min)
+        console.log("Param Max: ", param.max) 
+    })
 }
 
 function loadRNBOScript(version) {
