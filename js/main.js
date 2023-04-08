@@ -1,20 +1,52 @@
 //rnbo setup will accept a dynamic amount of parameters and load them in the order that they are written on the screen. this will fill a "devices" array and each RNBO device will be accessible through an index value. 
 
-//
-async function RNBOsetup(patchFileURL) {
-    let device;
-    console.log("RNBO setup working")
+//what we really need is exposed parameters, inputs and outputs from p5js and RNBO. we won't necessarily need a p5js sliders function unless you just want to use that for quick slider access. the most important part is that we have arrays for the device parameters,inputs, and outputs and variables/parameters for our p5js which has code thats not WASM and right in front of us so more flexible. 
 
+// 
+function webAudioContextSetup() {
     // Create AudioContext
     const WAContext = window.AudioContext || window.webkitAudioContext;
-    const context = new WAContext();
+    context = new WAContext();
     if (context != null){
         console.log("Audio Context Created");
     }
 
+
+    document.body.onclick = () => {
+        context.resume();
+    }
+}
+
+function createOutputNode() {
+
     // Create gain node and connect it to audio output
     const outputNode = context.createGain();
-    outputNode.connect(context.destination);  
+    outputNode.connect(context.destination);
+    devices[0].node.connect(outputNode);  
+
+    // Creates stop playback button with spacebar
+    let isVolumeOn = true;
+    window.addEventListener('keydown', event => {
+        if (event.code === 'Space') {
+            // toggle volume on/off
+            isVolumeOn = !isVolumeOn;
+            console.log("keydown event");
+            
+            // set gain value with linear ramp
+            const currentGain = outputNode.gain.value;
+            const targetGain = isVolumeOn ? 1 : 0;
+            const rampDuration = 0.1; // adjust as needed
+            outputNode.gain.cancelScheduledValues(context.currentTime);
+            outputNode.gain.setValueAtTime(currentGain, context.currentTime);
+            outputNode.gain.linearRampToValueAtTime(targetGain, context.currentTime + rampDuration);
+        }
+    });  
+
+}
+
+async function RNBOsetup(patchFileURL, context) {
+    let device;
+    console.log("RNBO setup working")
 
     // Fetch the exported patcher
     let response = await fetch(patchFileURL);
@@ -43,29 +75,11 @@ async function RNBOsetup(patchFileURL) {
         await device.loadDataBufferDependencies(dependencies);
 
     // Connect the device to the web audio graph
-    device.node.connect(outputNode);
+    // device.node.connect(outputNode);
 
-    document.body.onclick = () => {
-        context.resume();
-    }
+    
 
-    // Creates stop playback button with spacebar
-    let isVolumeOn = true;
-    window.addEventListener('keydown', event => {
-        if (event.code === 'Space') {
-            // toggle volume on/off
-            isVolumeOn = !isVolumeOn;
-            console.log("keydown event");
-            
-            // set gain value with linear ramp
-            const currentGain = outputNode.gain.value;
-            const targetGain = isVolumeOn ? 1 : 0;
-            const rampDuration = 0.1; // adjust as needed
-            outputNode.gain.cancelScheduledValues(context.currentTime);
-            outputNode.gain.setValueAtTime(currentGain, context.currentTime);
-            outputNode.gain.linearRampToValueAtTime(targetGain, context.currentTime + rampDuration);
-        }
-    });  
+    
 
     numberOfDeviceParameters = device.parameters.length;
         
