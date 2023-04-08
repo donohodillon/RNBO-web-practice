@@ -22,7 +22,7 @@ function createOutputNode() {
     // Create gain node and connect it to audio output
     const outputNode = context.createGain();
     outputNode.connect(context.destination);
-    devices[0].node.connect(outputNode);  
+    devices[1].node.connect(outputNode);  
 
     // Creates stop playback button with spacebar
     let isVolumeOn = true;
@@ -103,12 +103,12 @@ function loadRNBOScript(version) {
 }
 
 function makeP5jsSliders(deviceIndex) {
-    let offset = 0;
+    
     console.log("p5jsslidersfunction")
     devices[deviceIndex].parameters.forEach((param, index)=>{
         let slider = createSlider(param.min, param.max, param.min);
         console.log("slider created")
-        slider.position(10, 10 + offset);
+        slider.position(10, offset);
         // label = createElement('p', 'Slider value: ' + slider.value());
         // label.position(20, 80 + offset);
         // label.style('color', 'white');

@@ -1,6 +1,7 @@
 let devices = [];
 let numberOfDeviceParameters;
 let sliders = [];
+let offset = 10;
 
 let points = 6;
 let slider_A;
@@ -11,15 +12,15 @@ let step = 0;
 let step2 = 0;
 
 async function setup() {
-  webAudioContextSetup();
-  await RNBOsetup('export/patch.exportSAW.json', context);
-//   await RNBOsetup('export/patch.simpler-sampler-export.json', context);
-  devices[0].node.connect(devices[1].node);
-  createOutputNode();
+    webAudioContextSetup();
+  await RNBOsetup('export/patch.exportSAW.json', context); // Sound source
+  await RNBOsetup('export/rnbo.shimmerev.json', context); // Reverb effect
+  devices[0].node.connect(devices[1].node); // Connect sound source to reverb effect
+  devices[1].node.connect(context.destination); // Connect reverb effect to audio context's destination
   makeP5jsSliders(0);
   makeP5jsSliders(1);
   
-  console.log(devices)
+  console.log(devices) 
   
    
   createCanvas(windowWidth, windowHeight);
