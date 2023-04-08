@@ -11,10 +11,17 @@ let step = 0;
 let step2 = 0;
 
 async function setup() {
-
-  await RNBOsetup('export/patch.exportSAW.json');
-  makeP5jsSliders(0); 
+  webAudioContextSetup();
+  await RNBOsetup('export/patch.exportSAW.json', context);
+//   await RNBOsetup('export/patch.simpler-sampler-export.json', context);
+  devices[0].node.connect(devices[1].node);
+  createOutputNode();
+  makeP5jsSliders(0);
+  makeP5jsSliders(1);
   
+  console.log(devices)
+  
+   
   createCanvas(windowWidth, windowHeight);
   colorMode(HSB, 100);
 	// Setup Sliders
