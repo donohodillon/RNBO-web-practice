@@ -1,5 +1,8 @@
+//rnbo setup will accept a dynamic amount of parameters and load them in the order that they are written on the screen. this will fill a "devices" array and each RNBO device will be accessible through an index value. 
 
+//
 async function RNBOsetup(patchFileURL) {
+    let device;
     console.log("RNBO setup working")
 
     // Create AudioContext
@@ -13,49 +16,31 @@ async function RNBOsetup(patchFileURL) {
     const outputNode = context.createGain();
     outputNode.connect(context.destination);  
 
-  
     // Fetch the exported patcher
-    let response, patcher;
-    try { 
-        response = await fetch(patchFileURL);
-        patcher = await response.json();
+    let response = await fetch(patchFileURL);
+    let patcher = await response.json();
     
-        if (!window.RNBO) {
-            // Load RNBO script dynamically
-            // Note that you can skip this by knowing the RNBO version of your patch
-            // beforehand and just include it using a <script> tag
-            await loadRNBOScript(patcher.desc.meta.rnboversion);
-        }
-
-    } catch (err) {
-        return;
+    if (!window.RNBO) {
+        // Load RNBO script dynamically
+        // Note that you can skip this by knowing the RNBO version of your patch
+        // beforehand and just include it using a <script> tag
+        await loadRNBOScript(patcher.desc.meta.rnboversion);
     }
 
     // (Optional) Fetch the dependencies
     let dependencies = [];
-    try {
-        const dependenciesResponse = await fetch("export/dependencies.json");
-        dependencies = await dependenciesResponse.json();
+    const dependenciesResponse = await fetch("export/dependencies.json");
+    dependencies = await dependenciesResponse.json();
 
-        // Prepend "export" to any file dependenciies
-        dependencies = dependencies.map(d => d.file ? Object.assign({}, d, { file: "export/" + d.file }) : d);
-    } catch (e) {}
+    // Prepend "export" to any file dependenciies
+    dependencies = dependencies.map(d => d.file ? Object.assign({}, d, { file: "export/" + d.file }) : d);
 
     // Create the device
-    try {
-        device = await RNBO.createDevice({ context, patcher });
-    } catch (err) {
-        if (typeof guardrails === "function") {
-            guardrails({ error: err });
-        } else {
-            throw err;
-        }
-        return;
-    }
+    device = await RNBO.createDevice({ context, patcher });
 
-     // (Optional) Load the samples
-     if (dependencies.length)
-     await device.loadDataBufferDependencies(dependencies);
+    // (Optional) Load the samples
+    if (dependencies.length)
+        await device.loadDataBufferDependencies(dependencies);
 
     // Connect the device to the web audio graph
     device.node.connect(outputNode);
@@ -64,12 +49,10 @@ async function RNBOsetup(patchFileURL) {
         context.resume();
     }
 
-      // Creates stop playback button with spacebar
-
-      let isVolumeOn = true;
-
-      window.addEventListener('keydown', event => {
-          if (event.code === 'Space') {
+    // Creates stop playback button with spacebar
+    let isVolumeOn = true;
+    window.addEventListener('keydown', event => {
+        if (event.code === 'Space') {
             // toggle volume on/off
             isVolumeOn = !isVolumeOn;
             console.log("keydown event");
@@ -81,23 +64,17 @@ async function RNBOsetup(patchFileURL) {
             outputNode.gain.cancelScheduledValues(context.currentTime);
             outputNode.gain.setValueAtTime(currentGain, context.currentTime);
             outputNode.gain.linearRampToValueAtTime(targetGain, context.currentTime + rampDuration);
-          }
-        });  
+        }
+    });  
 
     numberOfDeviceParameters = device.parameters.length;
-
-    // Log out parameter attributes for debugging
-    device.parameters.forEach(param => {
-        console.log("Param Id: ", param.id)
-        console.log("Param Name: ", param.name)
-        console.log("Param Min: ", param.min)
-        console.log("Param Max: ", param.max) 
-    })
+        
+    devices.push(device);
 }
 
 function loadRNBOScript(version) {
-    return new Promise((resolve, reject) => {
-        if (/^\d+\.\d+\.\d+-dev$/.test(version)) {
+    return new Promise((resolve, reject) => { 
+        if (/^\d+\.\d+\.\d+-dev$/.test(version)) { 
             throw new Error("Patcher exported with a Debug Version!\nPlease specify the correct RNBO version to use in the code.");
         }
         const el = document.createElement("script");
@@ -111,15 +88,18 @@ function loadRNBOScript(version) {
     });
 }
 
-function makeP5jsSliders() {
+function makeP5jsSliders(deviceIndex) {
     let offset = 0;
     console.log("p5jsslidersfunction")
-    device.parameters.forEach((param, index)=>{
+    devices[deviceIndex].parameters.forEach((param, index)=>{
         let slider = createSlider(param.min, param.max, param.min);
         console.log("slider created")
         slider.position(10, 10 + offset);
+        // label = createElement('p', 'Slider value: ' + slider.value());
+        // label.position(20, 80 + offset);
+        // label.style('color', 'white');
         slider.input(() => {
-            let parameterMap = device.parameters;
+            let parameterMap = devices[deviceIndex].parameters;
             parameterMap[index].value = slider.value();
             // console.log(parameterMap[index].value, slider.value());
             // console.log(parameterMap[index].value, slider.value());
@@ -130,6 +110,17 @@ function makeP5jsSliders() {
         offset += 30;
     })
 }
+
+// function makeP5jjsSlidersLabels() {
+//     let offset = 0;
+//     sliders.forEach((slider) => {
+//         label = createElement('p', 'Slider value: ' + slider.value());
+//         label.position(20, 80 + offset);
+//         label.style('color', 'white');
+//         offset += 30;
+//     })
+    
+// }
 
 
 function makeInportForm(device) {
@@ -174,11 +165,11 @@ function makeInportForm(device) {
 function attachOutports(device) {
     const outports = device.outports;
     if (outports.length < 1) {
-        document.getElementById("rnbo-console").removeChild(document.getElementById("rnbo-console-div"));
+       console.log('Beans')
         return;
     }
 
-    document.getElementById("rnbo-console").removeChild(document.getElementById("no-outports-label"));
+    
     device.messageEvent.subscribe((ev) => {
 
         // Ignore message events that don't belong to an outport
@@ -187,7 +178,7 @@ function attachOutports(device) {
         // Message events have a tag as well as a payload
         console.log(`${ev.tag}: ${ev.payload}`);
 
-        document.getElementById("rnbo-console-readout").innerText = `${ev.tag}: ${ev.payload}`;
+      
     });
 }
 

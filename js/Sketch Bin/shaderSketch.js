@@ -100,8 +100,9 @@ function preload(){
  }
 
 async function setup() {
-    await RNBOsetup('export/patch.exportSAW.json');
+    await RNBOsetup('export/rnbo.shimmerev.json');
     makeP5jsSliders(); 
+
   // got shader? use WEBGL mode
   createCanvas(1112, 834, WEBGL);
   noStroke();
@@ -113,11 +114,11 @@ async function setup() {
 }
 
 function draw() {
+	// makeP5jjsSlidersLabels();
     if (sliders.length > 0) {
         sliderValue = sliders[0].value();
         sliderValue1 = sliders[1].value();
-    
-  // shader() sets the active shader with our shader 
+
   shader(sh);
 
   sh.setUniform("u_resolution", [width, height]);
