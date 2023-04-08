@@ -12,26 +12,19 @@ let step = 0;
 let step2 = 0;
 
 async function setup() {
-    webAudioContextSetup();
+
+  webAudioContextSetup();
   await RNBOsetup('export/patch.exportSAW.json', context); // Sound source
   await RNBOsetup('export/rnbo.shimmerev.json', context); // Reverb effect
-  devices[0].node.connect(devices[1].node); // Connect sound source to reverb effect
-  devices[1].node.connect(context.destination); // Connect reverb effect to audio context's destination
+  devices[0].node.connect(devices[1].node); // Connect sound source to reverb 
+  createOutputNode();
   makeP5jsSliders(0);
-  makeP5jsSliders(1);
-  
-  console.log(devices) 
+  makeP5jsSliders(1);  
+  console.log(devices); 
   
    
   createCanvas(windowWidth, windowHeight);
   colorMode(HSB, 100);
-	// Setup Sliders
-	// slider_A = createSlider(3, 20, 3);
-	// slider_A.position(5, 5);
-	// slider_A.style('width', '100px');
-	// slider_B = createSlider(1, 1000, 250);
-	// slider_B.position(5, 25);
-	// slider_B.style('width', '100px');
 }
  
 function draw() {
