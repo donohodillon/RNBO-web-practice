@@ -15,11 +15,16 @@ async function setup() {
 
   webAudioContextSetup();
   await RNBOsetup('export/patch.exportSAW.json', context); // Sound source
-  await RNBOsetup('export/rnbo.shimmerev.json', context); // Reverb effect
-  devices[0].node.connect(devices[1].node); // Connect sound source to reverb 
+  await RNBOsetup('export/rnbo.shimmerev.json', context); 
+  await RNBOsetup('export/rnbo.phaser.json', context); 
+  devices[0].node.connect(devices[1].node);
+  devices[1].node.connect(devices[2].node);  // Connect sound source to reverb 
   createOutputNode();
   makeP5jsSliders(0);
-  makeP5jsSliders(1);  
+  makeP5jsSliders(1);
+  makeP5jsSliders(2);
+   
+
   console.log(devices); 
   
    
