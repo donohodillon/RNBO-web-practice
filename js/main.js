@@ -22,10 +22,10 @@ function createOutputNode() {
     // Create gain node and connect it to audio output
     const outputNode = context.createGain();
     outputNode.connect(context.destination);
-    devices[1].node.connect(outputNode);  
-
-    // Creates stop playback button with spacebar
+    devices[devices.length - 1].node.connect(outputNode);
+    
     let isVolumeOn = true;
+    // node.createGain();
     window.addEventListener('keydown', event => {
         if (event.code === 'Space') {
             // toggle volume on/off
@@ -40,8 +40,7 @@ function createOutputNode() {
             outputNode.gain.setValueAtTime(currentGain, context.currentTime);
             outputNode.gain.linearRampToValueAtTime(targetGain, context.currentTime + rampDuration);
         }
-    });  
-
+    }); 
 }
 
 async function RNBOsetup(patchFileURL, context) {
@@ -53,9 +52,6 @@ async function RNBOsetup(patchFileURL, context) {
     let patcher = await response.json();
     
     if (!window.RNBO) {
-        // Load RNBO script dynamically
-        // Note that you can skip this by knowing the RNBO version of your patch
-        // beforehand and just include it using a <script> tag
         await loadRNBOScript(patcher.desc.meta.rnboversion);
     }
 
@@ -77,9 +73,6 @@ async function RNBOsetup(patchFileURL, context) {
     // Connect the device to the web audio graph
     // device.node.connect(outputNode);
 
-    
-
-    
 
     numberOfDeviceParameters = device.parameters.length;
         
