@@ -3,6 +3,9 @@ let numberOfDeviceParameters;
 let sliders = [];
 let offset = 10;
 
+let f = 0;
+
+
 async function setup() {
 
   webAudioContextSetup();
@@ -21,7 +24,8 @@ async function setup() {
   makeP5jsSliders(1);
   makeP5jsSliders(2);
   
-  createCanvas(windowWidth, windowHeight);
+  createCanvas(windowWidth, windowHeight, WEBGL);
+	noStroke();
 }
  
 function draw() {
@@ -33,8 +37,23 @@ function draw() {
   devices[0].parameters[0].value = mouseX;
   devices[2].parameters[3].value = mouseY*10;
   
-  background(255);
-  ellipse(windowWidth/2,windowHeight/2,devices[0].parameters[0].value,devices[0].parameters[0].value)
+  [3, 3, -3].map(i => pointLight([devices[0].parameters[0].value], 0, -400 * i, 0));
+	let e = 180+(devices[0].parameters[0].value/4);
+	rotateY(f / e);
+	for (y = -e; y <= e; y += 30) {
+		for (z = -e; z <= e; z += 30) {
+			for (x = -e; x <= e; x += 30) {
+				let Y = y - f % 30;
+				let E = e - dist(0, 0, 0, x, Y, z);
+				push();
+				translate(x, Y, z);
+				if (E > 0) sphere(E / 4, 33);
+				pop();
+			}
+		}
+	}
+	box(2000);
+	f++;
     
   }
 }
