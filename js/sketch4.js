@@ -28,7 +28,7 @@ async function setup() {
 
   makeP5jsSliders(0);
   makeP5jsSliders(1);
-  makeP5jsSliders(2);
+//   makeP5jsSliders(2);
 
   console.log('Will this work?: ', devices[0].parameters[0].value)
 
@@ -41,17 +41,7 @@ function draw() {
   //IMPORTANT: Make sure you're checking that the sliders array is full before you use it
 
   if (sliders.length > 0) {
-	
-	let minValue = sliders[0].elt.min;
-    let maxValue = sliders[0].elt.max;
-    let range = maxValue - minValue;
-    let sliderValue = map(sin(sliderAngle), -1, 1, minValue, maxValue);
-    sliders[0].value(sliderValue);
 
-    // Increment the angle for the sin function
-    sliderAngle += sliderSpeed;
-  // Fetch from sliders
-	//print(slider_B.value());
 	background("black");
 	translate(windowWidth/2, windowHeight/2);
 	noFill();
