@@ -3,8 +3,7 @@ let numberOfDeviceParameters;
 let sliders = [];
 let offset = 10;
 
-let palette = ["#2A7135", "#A38046", "#EEEEEE", "#F4B600", "#DD2720"];
-let ease;
+let t = 0;
 
 
 async function setup() {
@@ -14,23 +13,22 @@ async function setup() {
   await RNBOsetup('export/patch.exportSAW.json', context); 
   // await RNBOsetup('export/rnbo.shimmerev.json', context); 
   await RNBOsetup('export/rnbo.phaser.json', context);
-  await RNBOsetup('export/rnbo.overdrive.json', context);  
+  await RNBOsetup('export/rnbo.overdrive.json', context); 
+  await RNBOsetup('export/rnbo.filterdelay.json', context);  
 
   devices[0].node.connect(devices[1].node);
   devices[1].node.connect(devices[2].node);
+  devices[2].node.connect(devices[3].node);
   // devices[2].node.connect(devices[3].node);
   createOutputNode();
 
   makeP5jsSliders(0);
   makeP5jsSliders(1);
   makeP5jsSliders(2);
+  makeP5jsSliders(3);
   
-  createCanvas(800, 800, WEBGL);
-  colorMode(HSB, 360, 100, 100, 100);
-  angleMode(DEGREES);
-  ease = new p5.Ease();
-  shuffle(palette,true);
-  ortho(-width / 2, width / 2, -height / 2, height / 2, -5000, 5000);
+  createCanvas(windowWidth, windowHeight, WEBGL);
+	ortho(-width / 2, width / 2, -height / 2, height / 2, -5000, 5000);
 }
  
 function draw() {
@@ -42,125 +40,46 @@ function draw() {
   devices[0].parameters[0].value = mouseX;
   devices[2].parameters[3].value = mouseY*10;
   
-  randomSeed(frameCount/150);
-  
-  background(0,0,0);
-  noStroke();
-  beginShape();
-  fill(palette[0]);
-  vertex(-width,-height/2,-2500);
-  fill(palette[1]);
-  vertex(width,-height/2,-2500);
-  fill(palette[2]);
-  vertex(width,height/2,-2500);
-  fill(palette[3]);
-  vertex(-width,height/2,-2500);
-  endShape();
+  background(0);
 
-  // background(palette[0]);
+	lights();
 
-  // lights();
-  ambientLight(0, 0, 100);
-  directionalLight(color(0, 0, 100), 0, 0, 1);
-  directionalLight(color(0, 0, 100), 0, 0, -1);
-  directionalLight(color(0, 0, 100), 0, 1, 0);
-  directionalLight(color(0, 0, 100), 0, -1, 0);
-  directionalLight(color(0, 0, 100), 1, 0, 0);
-  directionalLight(color(0, 0, 100), -1, 0, 0);
+	// directionalLight(color(255/2),0,0,-1);
+	// directionalLight(color(255/2),1,0,0);
+	let mappedValue = map(devices[0].parameters[0].value, devices[0].parameters[0].min, devices[0].parameters[0].max, 50, 300);
+    let mappedValue2 = map(devices[0].parameters[0].value, devices[0].parameters[0].min, devices[2].parameters[2].max, 0, 0.15);
+	let mappedValue3 = map(devices[1].parameters[2].value, devices[1].parameters[2].min, devices[1].parameters[2].max, 5, 15);
+	let mappedValue4 = map(devices[1].parameters[1].value, devices[1].parameters[1].min, devices[1].parameters[1].max, 5, 35);
 
-  // orbitControl();
-  
-  rotateX(-25*sin(frameCount/3));
-  rotateY(frameCount / 3);
+	let scl = mappedValue; //100*tan(.1*t%(PI/2));
+	orbitControl();
+	// rotateX(90);
+	for (let v = 0; v < 1; v += 1 / 100) {
+		for (let u = 0; u < 1; u += 1 / mappedValue4) {
+			let x = (1 + sin(v + 1 * PI * u - t) * sin(1 * PI * v + t)) * sin(4 * PI * v + t);
+			let y = (1 + sin(1 * PI * u - t) * sin(1 * PI * v + t)) * cos(4 * PI * v + t);
+			let z = cos(1 * PI * u + t) * sin(1 * PI * v + t) + 4 * v - 2;
 
-  push();
-  rotate((int(random(4)) * 360) / 4);
-  translate(-width / 2, -height / 2, 0);
-  let offset = width / 10;
-  let x, y, w, h;
-  x = offset;
-  y = offset;
-  w = width - offset * 2;
-  h = height - offset * 2;
-  separateGrid(x, y, 0, w, h);
-  pop();
+			x *= scl;
+			y *= scl;
+			z *= scl;
 
-  // noLoop();
-  
-    
-  }
+			if (v == 0) {
+				pointLight(color(255), x, y, z);
+
+			}
+
+			push();
+			translate(x, y, z);
+			rotateX(x / scl);
+			rotateY(y / scl);
+			rotateZ(z / scl);
+			noStroke();
+			sphere(mappedValue3);
+			pop();
+		}
+	}
+	t += mappedValue2;
 }
 
-function separateGrid(x, y, z, w, h) {
-	let yArr = [];
-	let xArrs = [];
-	let ySum = 0;
-	let yStep;
-	while (ySum < 1) {
-	  yStep = random(random(random()));
-	  if (ySum + yStep > 1) yStep = 1 - ySum;
-	  let xArr = [];
-	  let xSum = 0;
-	  let xStep;
-	  while (xSum < 1) {
-		xStep = random(random(random()));
-		if (xSum + xStep > 1) xStep = 1 - xSum;
-		xArr.push(xStep);
-		xSum += xStep;
-	  }
-	  xArr = shuffle(xArr, true);
-	  yArr.push(yStep);
-	  xArrs.push(xArr);
-	  ySum += yStep;
-	}
-	yArr = shuffle(yArr, true);
-  
-	for (let i = 0; i < yArr.length; i++) {
-	  let nx = x;
-	  let yVal = yArr[i] * h;
-	  let xArr = xArrs[i];
-	  for (let j = 0; j < xArr.length; j++) {
-		let xVal = xArr[j] * w;
-		let colors = shuffle(palette.concat());
-		let center = createVector(nx + xVal / 2, y + yVal / 2);
-		push();
-		translate(center.x, center.y, z);
-		noStroke();
-		let n = 0;
-		let eStep = 1 / int(random(2, colors.length));
-		if (random() > 0.5) {
-		  for (let e = 1; e > 0; e -= eStep) {
-			let v = (e+y+x+frameCount/100)%1;
-			v = ease.elasticOut(v*v);
-			let d = xVal/2;
-			let h = yVal;
-			push();
-			scale(e*v);
-			rotateY(45);
-			fill(colors[n++ % colors.length]);
-			cylinder(d*sqrt(2), h, 4+1, 1, false, false);
-			pop();
-		  }
-		} else {
-		  rotateZ(90);
-		  for (let e = 1; e > 0; e -= eStep) {
-			push();
-			scale(e);
-			fill(colors[n++ % colors.length]);
-			cylinder(
-			  (yVal / 2) * sin((xVal * 1) / e + frameCount),
-			  ((xVal * 1) / e) * sin((yVal * 1) / e + frameCount),
-			  64,
-			  1,
-			  false,
-			  false
-			);
-			pop();
-		  }
-		}
-		pop();
-		nx += xVal;
-	  }
-	  y += yVal;
-	}
-  }
+}
