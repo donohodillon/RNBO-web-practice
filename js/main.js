@@ -1,17 +1,15 @@
-//rnbo setup will accept a dynamic amount of parameters and load them in the order that they are written on the screen. this will fill a "devices" array and each RNBO device will be accessible through an index value. 
 
 //what we really need is exposed parameters, inputs and outputs from p5js and RNBO. we won't necessarily need a p5js sliders function unless you just want to use that for quick slider access. the most important part is that we have arrays for the device parameters,inputs, and outputs and variables/parameters for our p5js which has code thats not WASM and right in front of us so more flexible. 
 
 // 
 function webAudioContextSetup() {
-    // Create AudioContext
+
     const WAContext = window.AudioContext || window.webkitAudioContext;
     context = new WAContext();
+
     if (context != null){
         console.log("Audio Context Created");
     }
-
-
     document.body.onclick = () => {
         context.resume();
     }
@@ -24,8 +22,9 @@ function createOutputNode() {
     outputNode.connect(context.destination);
     devices[devices.length - 1].node.connect(outputNode);
     
+    // Lets the user control on/off using spacebar
     let isVolumeOn = true;
-    // node.createGain();
+
     window.addEventListener('keydown', event => {
         if (event.code === 'Space') {
             // toggle volume on/off
@@ -70,10 +69,6 @@ async function RNBOsetup(patchFileURL, context) {
     if (dependencies.length)
         await device.loadDataBufferDependencies(dependencies);
 
-    // Connect the device to the web audio graph
-    // device.node.connect(outputNode);
-
-
     numberOfDeviceParameters = device.parameters.length;
         
     devices.push(device);
@@ -96,39 +91,21 @@ function loadRNBOScript(version) {
 }
 
 function makeP5jsSliders(deviceIndex) {
-    
     console.log("p5jsslidersfunction")
     devices[deviceIndex].parameters.forEach((param, index)=>{
+
         let slider = createSlider(param.min, param.max, param.min);
         console.log("slider created")
         slider.position(10, offset);
-        // label = createElement('p', 'Slider value: ' + slider.value());
-        // label.position(20, 80 + offset);
-        // label.style('color', 'white');
+
         slider.input(() => {
             let parameterMap = devices[deviceIndex].parameters;
             parameterMap[index].value = slider.value();
-            // console.log(parameterMap[index].value, slider.value());
-            // console.log(parameterMap[index].value, slider.value());
-             // update parameter value in RNBO device
-
-          }); 
+          });
         sliders.push(slider);
         offset += 30;
     })
 }
-
-// function makeP5jjsSlidersLabels() {
-//     let offset = 0;
-//     sliders.forEach((slider) => {
-//         label = createElement('p', 'Slider value: ' + slider.value());
-//         label.position(20, 80 + offset);
-//         label.style('color', 'white');
-//         offset += 30;
-//     })
-    
-// }
-
 
 function makeInportForm(device) {
     const idiv = document.getElementById("rnbo-inports");
