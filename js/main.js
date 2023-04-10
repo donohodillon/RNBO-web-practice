@@ -91,6 +91,11 @@ function loadRNBOScript(version) {
 }
 
 function makeP5jsSliders(deviceIndex) {
+    
+    const recording = [];
+    let recordingStartTime;
+    // let event;
+
     console.log("p5jsslidersfunction")
     devices[deviceIndex].parameters.forEach((param, index)=>{
 
@@ -99,9 +104,50 @@ function makeP5jsSliders(deviceIndex) {
         slider.position(10, offset);
 
         slider.input(() => {
-            let parameterMap = devices[deviceIndex].parameters;
-            parameterMap[index].value = slider.value();
+            const value = slider.value();
+            updateParameter(value);
+            const timestamp = Date.now();
+            recording.push({ value, timestamp });
           });
+          
+
+          slider.elt.addEventListener('mousedown', (event) => {
+            recording.length = 0; // Clear the recording array.
+            recordingStartTime = Date.now(); // Record the start time.
+          });
+      
+          // Listen for the 'mouseup' event to stop recording and start replaying.
+          slider.elt.addEventListener('mouseup', (event) => {
+            // Calculate the time offsets for each recorded value.
+            const timeOffsets = recording.map(entry => entry.timestamp - recordingStartTime);
+            // Calculate the total duration of the recording.
+            const totalDuration = timeOffsets.length > 0 ? timeOffsets[timeOffsets.length - 1] : 0;
+            // Start the replay loop.
+            replayLoop(timeOffsets, totalDuration);
+          });
+
+          function replayLoop(timeOffsets, totalDuration) {
+            // Replay the recorded values using setTimeout.
+            recording.forEach((entry, index) => {
+              setTimeout(() => {
+                slider.value(entry.value);
+                updateParameter(entry.value); // Update the parameter value during playback
+              }, timeOffsets[index]);
+            });
+          
+            // Schedule the next loop iteration after the total duration of the recording.
+            if (totalDuration > 0) {
+              setTimeout(() => {
+                replayLoop(timeOffsets, totalDuration);
+              }, totalDuration);
+            }
+          }
+
+          function updateParameter(value) {
+            let parameterMap = devices[deviceIndex].parameters;
+            parameterMap[index].value = value;
+          }
+
         sliders.push(slider);
         offset += 30;
     })
